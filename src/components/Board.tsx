@@ -1,5 +1,5 @@
 import {board} from "../GameBoard"
-import {VisualCell} from "./Cell"
+import {VisualCell} from "./ViusalCell"
 import {Cell} from "../GameBoard"
 
 export function Board(){
