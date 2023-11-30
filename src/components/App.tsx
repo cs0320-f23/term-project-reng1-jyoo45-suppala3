@@ -1,4 +1,5 @@
 import "../styles/App.css";
+import Minesweeper from "./Minesweeper";
 import REPL from "./Minesweeper";
 
 function App() {
@@ -7,7 +8,7 @@ function App() {
       <p className="App-header">
         <h1>Minesweeper</h1>
       </p>
-      <REPL />
+      <Minesweeper />
     </div>
   );
 }

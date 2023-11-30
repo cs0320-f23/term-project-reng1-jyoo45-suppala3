@@ -1,5 +1,10 @@
 import "../styles/main.css";
+import { Board } from "./Board";
 
 export default function Minesweeper() {
-  return <div className="game"></div>;
+  return(<div>
+    <div className="game"></div>;
+    <Board></Board>
+  </div>);
+  
 }
