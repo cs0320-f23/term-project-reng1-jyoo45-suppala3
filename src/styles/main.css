@@ -1,0 +1,42 @@
+body,
+h1,
+p,
+div {
+  margin: 0;
+  padding: 0;
+}
+
+.game {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.minesweeper-board {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2px;
+}
+
+.row {
+  display: flex;
+}
+
+.cell {
+  flex: 1;
+  height: 30px;
+  border: 1px solid #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.cell.hidden {
+  background-color: #ddd;
+}
+
+.cell:hover {
+  background-color: #eee;
+}

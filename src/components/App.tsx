@@ -1,6 +1,5 @@
 import "../styles/App.css";
 import Minesweeper from "./Minesweeper";
-import REPL from "./Minesweeper";
 
 function App() {
   return (

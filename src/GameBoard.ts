@@ -1,21 +1,20 @@
-import { NumberLiteralType } from "typescript";
-
-export interface Cell{
-    row: number;
-    col: number;
-    val : number;
-    isHidden : boolean;
+export interface Cell {
+  val: number;
+  isHidden: boolean;
+  row: number;
+  col: number;
 }
 
-const rows = 10;
-const cols = 10;
-export const board: Array<Array<Cell>> = Array.from({ length: rows }, (_, rowIndex) =>
-  Array.from({ length: cols }, (_, colIndex) => ({
-    val: 0,
-    isHidden: true,
-    row: rowIndex,
-    col: colIndex
-  }))
-);
+export const createEmptyBoard = (rows: number, cols: number): Cell[][] => {
+  const board: Cell[][] = [];
+  for (let i = 0; i < rows; i++) {
+    const row: Cell[] = [];
+    for (let j = 0; j < cols; j++) {
+      row.push({ val: 0, isHidden: true, row: i, col: j });
+    }
+    board.push(row);
+  }
+  return board;
+};
 
-
+export const board = createEmptyBoard(10, 10);
