@@ -8,7 +8,9 @@ export const VisualCell = (cell: Cell, onClick: Function) => {
     // >
     //   {cell.isMine ? "💣" : cell.adjacentMines}
     // </div>
-    <div></div>
+    <div onClick={() => onClick(cell.row, cell.col)}>
+      
+    </div>
   );
 };
 
