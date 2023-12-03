@@ -14,6 +14,7 @@ export const createEmptyBoard = (rows: number, cols: number): Cell[][] => {
     }
     board.push(row);
   }
+  board[5][5].val = -1;
   return board;
 };
 
