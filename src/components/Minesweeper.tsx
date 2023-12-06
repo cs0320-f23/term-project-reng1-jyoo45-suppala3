@@ -4,28 +4,28 @@ import Board from "./Board";
 import { board, Cell, createEmptyBoard } from "../GameBoard";
 
 const Minesweeper: React.FC = () => {
-  const [gameBoard, setGameBoard] = useState<Cell[][]>(board);
+  const [gameBoard, setGameBoard] = useState<Cell[][]>([]);
 
   const [gameOver, setGameOver] = useState<boolean>(false);
 
   const [hidden, setHidden] = useState<number>(100);
-  const mines: number = 1;
+  const mines: number = 5;
 
   useEffect(() => {
-    const newBoard = createEmptyBoard(10, 10);
+    const newBoard = createEmptyBoard(10, 10, mines);
     setGameBoard(newBoard);
   }, []);
 
   const handleCellClick = (row: number, col: number) => {
-    if(!gameOver){
+    if (!gameOver) {
       setHidden(hidden - 1);
       const updatedBoard = [...gameBoard];
       updatedBoard[row][col].isHidden = false;
-      if(gameBoard[row][col].val === -1){
+      if (gameBoard[row][col].val === -1) {
         setGameOver(true);
       }
       setGameBoard(updatedBoard);
-      if(hidden == mines){
+      if (hidden == mines) {
         setGameOver(true);
       }
     }
