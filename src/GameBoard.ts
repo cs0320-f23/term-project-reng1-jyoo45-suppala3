@@ -33,8 +33,26 @@ export const createEmptyBoard = (
 
     // Check if the cell already has a mine
     if (board[randomRow][randomCol].val !== -1) {
-      board[randomRow][randomCol].val = -1;
+      board[randomRow][randomCol].val = -1; // Place a mine
       minesPlaced++;
+
+      // Update adjacent cells
+      for (let i = -1; i <= 1; i++) {
+        for (let j = -1; j <= 1; j++) {
+          const newRow = randomRow + i;
+          const newCol = randomCol + j;
+
+          if (
+            newRow >= 0 &&
+            newRow < rows &&
+            newCol >= 0 &&
+            newCol < cols &&
+            board[newRow][newCol].val !== -1
+          ) {
+            board[newRow][newCol].val += 1;
+          }
+        }
+      }
     }
   }
 
