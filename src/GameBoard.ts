@@ -58,5 +58,3 @@ export const createEmptyBoard = (
 
   return board;
 };
-
-export const board: Cell[][] = createEmptyBoard(10, 10, 5);
