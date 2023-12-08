@@ -14,6 +14,8 @@ interface ControlledInputProps {
   value: string;
   setValue: Dispatch<SetStateAction<string>>;
   ariaLabel: string;
+  focus: number;
+  setFocus: Dispatch<SetStateAction<number>>;
 }
 
 /**
@@ -25,8 +27,26 @@ export function ControlledInput({
   value,
   setValue,
   ariaLabel,
+  focus, 
+  setFocus
 }: ControlledInputProps) {
   const ref = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (event.key === "Tab" && focus === 1) {
+        event.preventDefault();
+        ref.current?.focus();
+        setFocus(0);
+      }
+    };
+    window.addEventListener("keydown", handleKeyPress);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [focus]);
+
 
   return (
     <input

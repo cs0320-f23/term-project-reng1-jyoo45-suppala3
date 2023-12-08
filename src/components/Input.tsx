@@ -1,9 +1,15 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { ControlledInput } from "./ControlledInput";
 
-export function Input(){
+
+interface InputProps{
+  focus: number;
+  setFocus: Dispatch<SetStateAction<number>>;
+}
+export function Input(props: InputProps){
 
     const [commandString, setCommandString] = useState<string>("");
+    //const [focus, setFocus] = useState<number>(1);
 
     function handleSubmit(string: string){
         setCommandString("");
@@ -24,6 +30,8 @@ export function Input(){
             value={commandString}
             setValue={setCommandString}
             ariaLabel={"Command input"}
+            focus={props.focus}
+            setFocus={props.setFocus}
           />
           <br></br>
 

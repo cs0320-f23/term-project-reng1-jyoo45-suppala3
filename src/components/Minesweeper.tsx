@@ -1,18 +1,40 @@
-import React, { useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import "../styles/main.css";
 import Board from "./Board";
 import { createEmptyBoard, Cell } from "../GameBoard";
 
-const Minesweeper: React.FC = () => {
+interface MinesweeperProps{
+  focus: number;
+  setFocus: Dispatch<SetStateAction<number>>;
+}
+
+const Minesweeper: React.FC<MinesweeperProps> = ({ focus, setFocus }) => {
   const [gameBoard, setGameBoard] = useState<Cell[][]>([]);
   const [gameOver, setGameOver] = useState<boolean>(false);
   const [hidden, setHidden] = useState<number>(100);
-  const mines: number = 5; // Change the number of mines as needed
+  let mines: number = 5; // Change the number of mines as needed
+
+  const ref = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const newBoard = createEmptyBoard(10, 10, mines); // Adjust the board size and number of mines
     setGameBoard(newBoard);
   }, []);
+
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (event.key === "Tab" && focus === 0) {
+        event.preventDefault();
+        ref.current?.focus();
+        setFocus(1);
+      }
+    };
+    window.addEventListener("keydown", handleKeyPress);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [focus]);
 
   const revealEmptySquares = (row: number, col: number) => {
     if (
@@ -56,6 +78,21 @@ const Minesweeper: React.FC = () => {
     setGameBoard(updatedBoard);
   };
 
+  async function initializeGameBackend() {
+    return await fetch("TODO fetch link")
+      .then(async (response) => {
+        if (response.ok) {
+          const json = await response.json();
+          setGameBoard(json["board"]);
+          mines = json["mines"];
+          setHidden(json["hidden"]);
+        }
+      })
+      .catch((error) => {
+        return undefined;
+      });
+  }
+
   const handleCellClick = (row: number, col: number) => {
     if (!gameOver) {
       const updatedBoard = [...gameBoard];
@@ -73,9 +110,8 @@ const Minesweeper: React.FC = () => {
           // Clicked on a numbered square, reveal only this cell
           updatedBoard[row][col].isHidden = false;
           setHidden((prevHidden) => prevHidden - 1);
+          setGameBoard(updatedBoard);
         }
-
-        setGameBoard(updatedBoard);
 
         if (hidden === mines) {
           // All non-mine cells are revealed, game over
