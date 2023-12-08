@@ -92,17 +92,27 @@ public class MinesweeperServer extends WebSocketServer {
   @Override
   public void onClose(WebSocket webSocket, int code, String reason, boolean remote) {
     System.out.println("server: onClose called");
-//    User user = this.socketToUser.get(webSocket);
-//    if (user == null)
-//      return;
-//    String gameCode = this.userToGameCode.get(user);
-//    if (gameCode == null)
-//      return;
-//    GameState gameState = this.gameCodeToGameState.get(gameCode);
-//    if (gameState == null)
-//      return;
-//    gameState.updateOtherUsersWithRemovedPositions(user, webSocket, this.gameStateToSockets.get(gameState), this);
-//    this.handleUserDied(user, webSocket, gameState);
+    User user = this.socketToUser.get(webSocket);
+    if (user == null)
+      return;
+    this.allConnections.remove(webSocket);
+    this.inactiveConnections.remove(webSocket);
+    this.socketToUser.remove(webSocket);
+    String gameCode = this.userToGameCode.get(user);
+    if (gameCode == null)
+      return;
+    this.userToGameCode.remove(user);
+    GameState gameState = this.gameCodeToGameState.get(gameCode);
+    if(gameState == null)
+      return;
+    if (this.gameStateToSockets.get(gameState).size() == 1) {
+      this.gameStateToSockets.get(gameState).remove(webSocket);
+      this.gameStateToSockets.remove(gameState);
+      gameState = null; // so that it gets garbage collected eventually
+      this.gameCodeToGameState.remove(gameCode);
+    } else {
+      this.gameStateToSockets.get(gameState).remove(webSocket);
+    }
   }
 
   @Override
