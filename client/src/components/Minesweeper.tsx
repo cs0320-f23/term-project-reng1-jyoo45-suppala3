@@ -8,13 +8,27 @@ import React, {
 import "../styles/main.css";
 import Board from "./Board";
 import { createEmptyBoard, Cell } from "./GameBoard";
+import GameState from "./game/GameState";
+import { UpdateBoardMessage } from "./message/Message";
+import MessageType from "./message/MessageType";
 
 interface MinesweeperProps {
   focus: number;
   setFocus: Dispatch<SetStateAction<number>>;
+  gameState: GameState;
+  setGameState: Dispatch<SetStateAction<GameState>>;
+  gameCode: string;
+  socket: WebSocket;
 }
 
-const Minesweeper: React.FC<MinesweeperProps> = ({ focus, setFocus }) => {
+const Minesweeper: React.FC<MinesweeperProps> = ({
+  focus,
+  setFocus,
+  gameState,
+  setGameState,
+  gameCode,
+  socket,
+}) => {
   const [gameBoard, setGameBoard] = useState<Cell[][]>([]);
   const [gameOver, setGameOver] = useState<boolean>(false);
   const [hidden, setHidden] = useState<number>(100);
@@ -100,37 +114,43 @@ const Minesweeper: React.FC<MinesweeperProps> = ({ focus, setFocus }) => {
   }
 
   const handleCellClick = (row: number, col: number) => {
-    if (!gameOver) {
-      const updatedBoard = [...gameBoard];
-      const cell = updatedBoard[row][col];
-
-      if (cell.isHidden) {
-        if (cell.val === -1) {
-          // Clicked on a mine, reveal all mines and end the game
-          revealAllMines();
-          setGameOver(true);
-        } else if (cell.val === 0) {
-          // Clicked on an empty square, reveal adjacent empty squares
-          revealEmptySquares(row, col);
-        } else {
-          // Clicked on a numbered square, reveal only this cell
-          updatedBoard[row][col].isHidden = false;
-          setHidden((prevHidden) => prevHidden - 1);
-          setGameBoard(updatedBoard);
-        }
-
-        if (hidden === mines) {
-          // All non-mine cells are revealed, game over
-          setGameOver(true);
-        }
-      }
-    }
+    const message: UpdateBoardMessage = {
+      type: MessageType.UPDATE_BOARD,
+      data: {
+        cell: gameState.board[row][col],
+      },
+    };
+    socket.send(JSON.stringify(message));
+    // if (!gameOver) {
+    //   const updatedBoard = [...gameBoard];
+    //   const cell = updatedBoard[row][col];
+    //   if (cell.isHidden) {
+    //     if (cell.val === -1) {
+    //       // Clicked on a mine, reveal all mines and end the game
+    //       revealAllMines();
+    //       setGameOver(true);
+    //     } else if (cell.val === 0) {
+    //       // Clicked on an empty square, reveal adjacent empty squares
+    //       revealEmptySquares(row, col);
+    //     } else {
+    //       // Clicked on a numbered square, reveal only this cell
+    //       updatedBoard[row][col].isHidden = false;
+    //       setHidden((prevHidden) => prevHidden - 1);
+    //       setGameBoard(updatedBoard);
+    //     }
+    //     if (hidden === mines) {
+    //       // All non-mine cells are revealed, game over
+    //       setGameOver(true);
+    //     }
+    //   }
+    // }
   };
 
   return (
     <div>
       <div className="game"></div>
-      <Board onCellClick={handleCellClick} board={gameBoard} />
+      {gameCode}
+      <Board onCellClick={handleCellClick} board={gameState.board} />
     </div>
   );
 };

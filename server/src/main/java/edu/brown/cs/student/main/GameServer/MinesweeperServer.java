@@ -245,6 +245,27 @@ public class MinesweeperServer extends WebSocketServer {
           webSocket.send(jsonResponse);
           break;
         }
+        case UPDATE_BOARD -> { // update the board based on action
+          // on which this message was received
+          User user = this.socketToUser.get(webSocket);
+          String gameCode = this.userToGameCode.get(user);
+          if (gameCode == null)
+            throw new UserNoGameCodeException(MessageType.ERROR);
+          GameState gameState = this.gameCodeToGameState.get(gameCode);
+          if (gameState == null)
+            throw new GameCodeNoGameStateException(MessageType.ERROR);
+
+          Thread t = new Thread(() -> {
+            try {
+              new UpdateBoardHandler().handleBoardUpdate(user, deserializedMessage, gameState, webSocket, this.gameStateToSockets.get(gameState), this);
+            } catch (MissingFieldException e) {
+              String res = this.serialize(this.generateMessage("The message sent by the client was missing a required field", e.messageType));
+              webSocket.send(res);
+            }
+          });
+          t.start();
+          break;
+        }
         default -> {
           MessageType messageType =
               this.socketToUser.containsKey(webSocket) ? MessageType.ERROR : MessageType.JOIN_ERROR;

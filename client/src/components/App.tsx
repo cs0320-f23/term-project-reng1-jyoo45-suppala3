@@ -4,29 +4,50 @@ import { Input } from "./Input";
 import { useState, Dispatch, SetStateAction } from "react";
 import MessageType from "./message/MessageType";
 import {
+  CurrentBoardMessage,
+  UpdateBoardMessage,
   sendNewClientNoCodeMessage,
   sendNewClientWithCodeMessage,
 } from "./message/Message";
 import Home from "./home/Home";
 import Game from "./Game";
+import GameState from "./game/GameState";
+import { Cell } from "./GameBoard";
 
 function App() {
   const [focus, setFocus] = useState<number>(1);
   const [gameStarted, setGameStarted] = useState(false);
   const [gameCode, setGameCode] = useState("");
 
+  const [gameState, setGameState] = useState<GameState>({
+    board: [],
+    gameCode: "abc",
+  });
+
   return (
     <div className="App">
       <p className="App-header">
         <h1>Minesweeper</h1>
       </p>
-      {/* {gameStarted ? (
-        <Game gameCode={gameCode} socket={socket} />
+      {gameStarted ? (
+        <Minesweeper
+          focus={focus}
+          setFocus={setFocus}
+          gameState={gameState}
+          setGameState={setGameState}
+          gameCode={gameCode}
+          socket={socket}
+        />
       ) : (
-        <Home setGameStarted={setGameStarted} setGameCode={setGameCode} />
-      )} */}
-      <Input focus={focus} setFocus={setFocus}></Input>
-      <Minesweeper focus={focus} setFocus={setFocus} />
+        <Home
+          setGameStarted={setGameStarted}
+          setGameCode={setGameCode}
+          gameState={gameState}
+          setGameState={setGameState}
+        />
+      )}
+      {/* <Input focus={focus} setFocus={setFocus}></Input>
+      <Minesweeper focus={focus} setFocus={setFocus} /> */}
     </div>
   );
 }
@@ -62,6 +83,8 @@ export function registerSocket(
   setGameStarted: Dispatch<SetStateAction<boolean>>,
   setErrorText: Dispatch<SetStateAction<string>>,
   setGameCode: Dispatch<SetStateAction<string>>,
+  gameState: GameState,
+  setGameState: Dispatch<SetStateAction<GameState>>,
   username: string,
   hasGameCode: boolean,
   gameCode: string = ""
@@ -105,6 +128,30 @@ export function registerSocket(
         setGameCode(message.data.gameCode);
         break;
       }
+
+      // setting the client's game code
+      case MessageType.CURRENT_BOARD: {
+        console.log("updating board");
+        const currentBoardMessage: CurrentBoardMessage = message;
+        const board: Cell[][] = currentBoardMessage.data.board;
+        const newGameState: GameState = { ...gameState };
+        newGameState.board = board;
+        setGameState(newGameState);
+        break;
+      }
+
+      // console.log("UPDATE POSITION MESSAGE");
+      // const updatePositionMessage: UpdatePositionMessage = message;
+      // const toAdd: Position = updatePositionMessage.data.add;
+      // const toRemove: Position = updatePositionMessage.data.remove;
+      // const newGameState: GameState = { ...gameState };
+      // console.log(
+      //   "gameState otherbodies size: " + gameState.otherBodies.size
+      // );
+      // newGameState.otherBodies.delete(JSON.stringify(toRemove));
+      // newGameState.otherBodies.add(JSON.stringify(toAdd));
+      // setGameState(newGameState);
+      // break;
     }
   };
 

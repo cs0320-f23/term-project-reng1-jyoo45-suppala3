@@ -1,6 +1,7 @@
 import React, { useState, Dispatch, SetStateAction } from "react";
 
 import { registerSocket } from "../App";
+import GameState from "../game/GameState";
 
 /**
  * Interface representing data for an HTML input that updates metadata based
@@ -59,6 +60,8 @@ interface HomeProps {
   setGameStarted: Dispatch<SetStateAction<boolean>>;
   /** A function that sets the game code for the lobby the client is playing in */
   setGameCode: Dispatch<SetStateAction<string>>;
+  gameState: GameState;
+  setGameState: Dispatch<SetStateAction<GameState>>;
 }
 
 /**
@@ -78,6 +81,8 @@ interface HomeProps {
 export default function Home({
   setGameStarted,
   setGameCode,
+  gameState,
+  setGameState,
 }: HomeProps): JSX.Element {
   const [username, setUsername] = useState("");
   const [inputGamecode, setInputGamecode] = useState("");
@@ -95,6 +100,8 @@ export default function Home({
         setGameStarted,
         setErrorText,
         setGameCode,
+        gameState,
+        setGameState,
         username,
         false
       );
@@ -117,6 +124,8 @@ export default function Home({
         setGameStarted,
         setErrorText,
         setGameCode,
+        gameState,
+        setGameState,
         username,
         true,
         inputGamecode
