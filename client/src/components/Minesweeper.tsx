@@ -1,9 +1,15 @@
-import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import "../styles/main.css";
 import Board from "./Board";
-import { createEmptyBoard, Cell } from "../GameBoard";
+import { createEmptyBoard, Cell } from "./GameBoard";
 
-interface MinesweeperProps{
+interface MinesweeperProps {
   focus: number;
   setFocus: Dispatch<SetStateAction<number>>;
 }

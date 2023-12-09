@@ -1,5 +1,5 @@
 import React from "react";
-import { Cell } from "../GameBoard";
+import { Cell } from "./GameBoard";
 
 interface VisualCellProps {
   cell: Cell;

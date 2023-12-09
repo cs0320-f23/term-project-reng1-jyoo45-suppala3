@@ -3,17 +3,16 @@ package edu.brown.cs.student.main.User;
 import java.util.Objects;
 import java.util.UUID;
 
-/**
- * Class representing a User object within the game (with a UUID & username)
- */
+/** Class representing a User object within the game (with a UUID & username) */
 public class User {
 
   private final String id;
   private final String username;
 
   /**
-   * User object constructor -- assigning it a random universally unique
-   * identifier (in string form) and a username (as per the input)
+   * User object constructor -- assigning it a random universally unique identifier (in string form)
+   * and a username (as per the input)
+   *
    * @param username : the name to which this user is publicly assigned in-game
    */
   public User(String username) {
@@ -23,6 +22,7 @@ public class User {
 
   /**
    * Accessor method to retrive the UUID in string form
+   *
    * @return this user's UUID in string form
    */
   public String getId() {
@@ -31,6 +31,7 @@ public class User {
 
   /**
    * Accessor method to retrive the user's username
+   *
    * @return this user's username (type: String)
    */
   public String getUsername() {
@@ -38,9 +39,8 @@ public class User {
   }
 
   /**
-   * Custom User object equals method to determine equality based on
-   * whether the 'other User' has an equivalent UUID (in string form) and
-   * username
+   * Custom User object equals method to determine equality based on whether the 'other User' has an
+   * equivalent UUID (in string form) and username
    */
   @Override
   public boolean equals(Object o) {
@@ -55,8 +55,8 @@ public class User {
   }
 
   /**
-   * Custom User object hash method that creates hashes based exclusively
-   * on a user's UUID (in string form) and username
+   * Custom User object hash method that creates hashes based exclusively on a user's UUID (in
+   * string form) and username
    */
   @Override
   public int hashCode() {

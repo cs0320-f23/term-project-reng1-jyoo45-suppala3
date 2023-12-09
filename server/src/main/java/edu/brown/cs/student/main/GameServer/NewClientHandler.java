@@ -10,16 +10,19 @@ import org.java_websocket.WebSocket;
 
 public class NewClientHandler {
 
-  public User handleNewClientNoCode(Message message, WebSocket websocket, MinesweeperServer server) throws MissingFieldException, ClientAlreadyExistsException {
+  public User handleNewClientNoCode(Message message, WebSocket websocket, MinesweeperServer server)
+      throws MissingFieldException, ClientAlreadyExistsException {
     if (!message.data().containsKey("username"))
       throw new MissingFieldException(message, MessageType.JOIN_ERROR);
     User user = new User(message.data().get("username").toString());
     boolean result = server.addWebsocketUser(websocket, user);
-    if (!result)
-      throw new ClientAlreadyExistsException(MessageType.JOIN_ERROR);
+    if (!result) throw new ClientAlreadyExistsException(MessageType.JOIN_ERROR);
     return user;
   }
-  public User handleNewClientWithCode(Message message, WebSocket websocket, MinesweeperServer server) throws MissingFieldException, ClientAlreadyExistsException, IncorrectGameCodeException {
+
+  public User handleNewClientWithCode(
+      Message message, WebSocket websocket, MinesweeperServer server)
+      throws MissingFieldException, ClientAlreadyExistsException, IncorrectGameCodeException {
     if (!message.data().containsKey("username") || !message.data().containsKey("gameCode"))
       throw new MissingFieldException(message, MessageType.JOIN_ERROR);
     User user = new User(message.data().get("username").toString());
@@ -27,8 +30,7 @@ public class NewClientHandler {
     if (!server.getExistingGameCodes().contains(gameCode))
       throw new IncorrectGameCodeException(MessageType.JOIN_ERROR);
     boolean result = server.addWebsocketUser(websocket, user);
-    if (!result)
-      throw new ClientAlreadyExistsException(MessageType.JOIN_ERROR);
+    if (!result) throw new ClientAlreadyExistsException(MessageType.JOIN_ERROR);
     server.addGameCodeToUser(gameCode, user);
     return user;
   }
