@@ -51,17 +51,45 @@ public class GameState {
       WebSocket webSocket,
       Set<WebSocket> gameStateSockets,
       MinesweeperServer server) {
-    Random rand = new Random();
-    for (int i = 0; i < this.board.length; i++) {
-      for (int j = 0; j < this.board[0].length; j++) {
-        this.board[i][j] = new Cell(i, j, rand.nextInt(10), true);
+
+    System.out.println("starting mine creation");
+    int placedMines = 0;
+    int mineCount = 10;
+    while(placedMines < mineCount){
+      int randRow = (int)Math.floor(Math.random() * board.length);
+      int randCol = (int)Math.floor(Math.random() * board[0].length);
+      if(this.board[randRow][randCol] != null)
+        continue;
+      this.board[randRow][randCol] = new Cell(randRow, randCol, -1, true);
+      placedMines++;
+    }
+
+    System.out.println("populating neighboring cells");
+    for(int i = 0; i < this.board.length; i++){
+      for(int j = 0; j < this.board[0].length; j++){
+        if(board[i][j] == null){
+          board[i][j] = new Cell(i, j, calcSurroundingMines(i, j), true);
+        }
       }
     }
+    System.out.println("finished making board");
     this.sendBoardData();
   }
 
+  private int calcSurroundingMines(int row, int col){
+    int mineCount = 0;
+    for(int i = -1; i <= 1; i++){
+      for(int j = -1; j <= 1; j++){
+        if(row + i < 0 || row + i >= this.board.length || col + j < 0 || col + j >= this.board[0].length
+            || this.board[row + i][col + j] == null || this.board[row + i][col + j].getVal() != -1)
+          continue;
+        mineCount++;
+      }
+    }
+    return mineCount;
+  }
+
   public void updateBoard(Cell actionCell){
-    System.out.println(this.board);
     this.board[actionCell.getRow()][actionCell.getCol()].setHidden(false);
     this.sendBoardData();
   }
