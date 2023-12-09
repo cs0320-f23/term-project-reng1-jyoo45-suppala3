@@ -1,0 +1,52 @@
+body,
+h1,
+p,
+div {
+  margin: 0;
+  padding: 0;
+}
+
+.game {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.minesweeper-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.minesweeper-board {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 2px;
+  width: 80%;
+}
+
+.row {
+  display: flex;
+}
+
+.cell {
+  flex: 1;
+  height: 30px;
+  width: 30px;
+  border: 1px solid #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.hidden {
+  background-color: #ddd;
+  height: 30px;
+  width: 30px;
+}
+
+.cell:hover {
+  background-color: #d3e81a;
+}
