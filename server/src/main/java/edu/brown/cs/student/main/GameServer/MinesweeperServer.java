@@ -318,7 +318,7 @@ public class MinesweeperServer extends WebSocketServer {
   }
 
   /**
-   * Main method for the SlitherServer class. Used to instantiate an object of the SlitherServer
+   * Main method for the MinesweeperServer class. Used to instantiate an object of the MinesweeperServer
    * class and get it to listen for WebSocket connections on port 9000.
    *
    * @param args - a String array: arguments provided to the main method (unused in this case).

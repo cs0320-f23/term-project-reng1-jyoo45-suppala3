@@ -18,23 +18,20 @@ import org.java_websocket.WebSocket;
 public class UpdateBoardHandler {
 
   /**
-   * Activated when SlitherServer receives UPDATE_POSITION method to
-   * update for all users (sharing the inputted gameState) where the
-   * newly moved snake connected to the inputted webSocket is located
+   * Activated when MinesweeperServer receives UPDATE_POSITION method to
+   * update for all users (sharing the inputted gameState)
    *
-   * @param thisUser : the user whose snake's position is being updated
+   * @param thisUser : the user who is updating the board
    * @param message : the deserialized message from the client containing
-   * information about the snake's new position (to be added) and old
-   * position (to be removed)
+   * information about the cell clicked
    * @param gameState : the GameState corresponding to the game in which
    * this UPDATE_POSITION message is being processed
-   * @param webSocket : the WebSocket corresponding to the user whose snake's
-   * position is being updated
+   * @param webSocket : the WebSocket corresponding to the user who made the move
    * @param gameStateSockets : the set of WebSockets for this game so other
-   * users can be updated with this user's snake position update
+   * users can be updated with this user's action
    * @param server : the server through which GameState updates are sent live
    * to all users for synchronicity
-   * @throws MissingFieldException if both addData and removeData messages do not each contain an 'x' and 'y' field
+   * @throws MissingFieldException if a cell clicked is not present in the message
    */
   public void handleBoardUpdate(User thisUser, Message message, GameState gameState, WebSocket webSocket, Set<WebSocket> gameStateSockets, MinesweeperServer server) throws MissingFieldException {
     if (!message.data().containsKey("cell"))
@@ -44,23 +41,7 @@ public class UpdateBoardHandler {
     Cell actionCell = jsonAdapter.fromJsonValue(message.data().get("cell"));
     if(actionCell == null)
       throw new MissingFieldException(message, MessageType.ERROR);
-//    if ((!(cellData.containsKey("row") && cellData.containsKey("col") && cellData.containsKey("val") && cellData.containsKey("isHidden"))))
-//      throw new MissingFieldException(message, MessageType.ERROR);
-//    Cell actionCell = new Cell((Integer) cellData.get("row"), (Integer) cellData.get("col"), (Integer) cellData.get("val"), (Boolean) cellData.get("isHidden"));
     gameState.updateBoard(actionCell);
-
-//    Map<String, Double> addData = (Map<String, Double>) message.data().get("add");
-//    Map<String, Double> removeData = (Map<String, Double>) message.data().get("remove");
-//    if ((!(addData.containsKey("x") && addData.containsKey("y"))) || (!(removeData.containsKey("x") && removeData.containsKey("y"))))
-//      throw new MissingFieldException(message, MessageType.ERROR);
-//    Position toAdd = new Position(addData.get("x"), addData.get("y"));
-//    Position toRemove = new Position(removeData.get("x"), removeData.get("y"));
-//    gameState.updateOwnPositions(thisUser, toAdd, toRemove);
-//    gameState.updateOtherUsersWithPosition(thisUser, toAdd, toRemove, webSocket, gameStateSockets, server);
-//
-////    Thread t = new Thread(() -> gameState.collisionCheck(thisUser, toAdd, webSocket, gameStateSockets, server));
-//    gameState.collisionCheck(thisUser, toAdd, webSocket, gameStateSockets, server);
-////    t.start();
   }
 
 }
