@@ -21,6 +21,7 @@ function App() {
 
   const [gameState, setGameState] = useState<GameState>({
     board: [],
+    gameOver: false,
     gameCode: "abc",
   });
 
@@ -136,6 +137,7 @@ export function registerSocket(
         const board: Cell[][] = currentBoardMessage.data.board;
         const newGameState: GameState = { ...gameState };
         newGameState.board = board;
+        newGameState.gameOver = currentBoardMessage.data.gameOver;
         setGameState(newGameState);
         break;
       }

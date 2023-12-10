@@ -8,6 +8,8 @@ export default interface GameState {
   /** A metadata representation of the client's snake */
   board: Cell[][];
 
+  gameOver: boolean;
+
   /** The game code of the current lobby being played */
   gameCode: String;
 }

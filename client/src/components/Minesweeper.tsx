@@ -9,7 +9,7 @@ import "../styles/main.css";
 import Board from "./Board";
 import { createEmptyBoard, Cell } from "./GameBoard";
 import GameState from "./game/GameState";
-import { UpdateBoardMessage } from "./message/Message";
+import { UpdateBoardMessage, sendUpdateBoardMessage } from "./message/Message";
 import MessageType from "./message/MessageType";
 
 interface MinesweeperProps {
@@ -114,13 +114,14 @@ const Minesweeper: React.FC<MinesweeperProps> = ({
   }
 
   const handleCellClick = (row: number, col: number) => {
-    const message: UpdateBoardMessage = {
-      type: MessageType.UPDATE_BOARD,
-      data: {
-        cell: gameState.board[row][col],
-      },
-    };
-    socket.send(JSON.stringify(message));
+    // const message: UpdateBoardMessage = {
+    //   type: MessageType.UPDATE_BOARD,
+    //   data: {
+    //     cell: gameState.board[row][col],
+    //   },
+    // };
+    // socket.send(JSON.stringify(message));
+    sendUpdateBoardMessage(socket, gameState.board[row][col]);
     // if (!gameOver) {
     //   const updatedBoard = [...gameBoard];
     //   const cell = updatedBoard[row][col];
@@ -146,10 +147,13 @@ const Minesweeper: React.FC<MinesweeperProps> = ({
     // }
   };
 
+  console.log(gameState.gameOver);
+
   return (
     <div>
       <div className="game"></div>
-      {gameCode}
+      Game Code: {gameCode}
+      {gameState.gameOver && <div>GAME OVER</div>}
       <Board onCellClick={handleCellClick} board={gameState.board} />
     </div>
   );

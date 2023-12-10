@@ -72,6 +72,7 @@ export interface CurrentBoardMessage {
    */
   data: {
     board: Cell[][];
+    gameOver: boolean;
   };
 }
 
@@ -124,7 +125,7 @@ export function sendNewClientWithCodeMessage(
  * @param add the position of the segment of the snake to add
  * @param remove the position of the segment of the snake to remove
  */
-export function sendUpdatePositionMessage(
+export function sendUpdateBoardMessage(
   socket: WebSocket,
   cell: Cell
 ): void {

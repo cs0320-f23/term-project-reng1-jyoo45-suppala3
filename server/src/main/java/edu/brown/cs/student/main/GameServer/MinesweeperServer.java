@@ -202,8 +202,7 @@ public class MinesweeperServer extends WebSocketServer {
           GameCode.sendGameCode(gameCode, this.gameCodeToGameState.get(gameCode), this);
 
           GameState gameState = this.gameCodeToGameState.get(gameCode);
-          gameState.createNewBoard(
-              newUser, webSocket, this.gameStateToSockets.get(gameState), this);
+          gameState.createNewBoard(0, 0);
 
           Message message =
               this.generateMessage("New client added to new game", MessageType.JOIN_SUCCESS);
@@ -231,8 +230,7 @@ public class MinesweeperServer extends WebSocketServer {
           this.addSocketToGameState(existingGameCode, webSocket);
           this.gameCodeToGameState.get(existingGameCode).addUser(newUser);
           GameState gameState = this.gameCodeToGameState.get(this.userToGameCode.get(newUser));
-          gameState.createNewBoard(
-              newUser, webSocket, this.gameStateToSockets.get(gameState), this);
+          gameState.createNewBoard(0, 0);
 
           GameCode.sendGameCode(
               existingGameCode, this.gameCodeToGameState.get(existingGameCode), this);
