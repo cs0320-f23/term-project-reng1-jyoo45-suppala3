@@ -1,14 +1,14 @@
 package edu.brown.cs.student.main.Message;
 
 /**
- * MessageType enum to represent all message communication types (including
- * those between the server and client)
+ * MessageType enum to represent all message communication types (including those between the server
+ * and client)
  */
 public enum MessageType {
   NEW_CLIENT_NO_CODE,
   NEW_CLIENT_WITH_CODE,
-  UPDATE_LEADERBOARD,
-  SEND_BOARD,
+  UPDATE_BOARD,
+  CURRENT_BOARD,
   SET_GAME_CODE,
   ERROR,
   SUCCESS,
