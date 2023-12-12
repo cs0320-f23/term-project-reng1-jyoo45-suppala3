@@ -13,5 +13,5 @@ public enum MessageType {
   ERROR,
   SUCCESS,
   JOIN_ERROR,
-  JOIN_SUCCESS
+  RESTART_GAME, JOIN_SUCCESS
 }

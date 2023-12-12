@@ -25,20 +25,76 @@ function App() {
     gameCode: "abc",
   });
 
+  const [isOpen, setIsOpen] = useState(false);
+  const closePopup = () => {
+    setIsOpen(false);
+  };
+
+  //TODO
+  function restartGame(){
+    setGameState({
+      board: [],
+      gameOver: false,
+      gameCode: gameState.gameCode,
+    });
+
+    const restartMessage = {
+      type: "RESTART_GAME",
+      gameCode: gameCode,
+    };
+
+    socket.send(JSON.stringify(restartMessage));
+  }
+
   return (
     <div className="App">
       <p className="App-header">
         <h1>Minesweeper</h1>
       </p>
+
       {gameStarted ? (
-        <Minesweeper
-          focus={focus}
-          setFocus={setFocus}
-          gameState={gameState}
-          setGameState={setGameState}
-          gameCode={gameCode}
-          socket={socket}
-        />
+        <div>
+          <div className="page-container">
+            <div className="command-bar">
+              <div>
+
+              </div>
+              <Input
+                focus={focus}
+                gameState={gameState}
+                socket={socket}
+                setFocus={setFocus}
+              />
+              <button onClick={() => setIsOpen(true)}>Help</button>
+            </div>
+          </div>
+          <Minesweeper
+            focus={focus}
+            setFocus={setFocus}
+            gameState={gameState}
+            setGameState={setGameState}
+            gameCode={gameCode}
+            socket={socket}
+          />
+          {isOpen && (  
+            <div className="popup-overlay">
+              <div className="popup-content">
+                <button className="close-button" onClick={closePopup}>
+                  X
+                </button>
+                {/* Your popup content goes here */}
+                <div className="menu">
+                  <h2>To Play</h2>
+                  <p>Welcome to our version of minesweeper, where you can play single player or 
+                    multiplayer with as many players as you want
+                  </p>
+                  <br></br>
+                </div>
+              </div>
+            </div>
+          )}
+          <button onClick={restartGame}>Restart Game!</button>
+        </div>
       ) : (
         <Home
           setGameStarted={setGameStarted}
@@ -47,8 +103,6 @@ function App() {
           setGameState={setGameState}
         />
       )}
-      {/* <Input focus={focus} setFocus={setFocus}></Input>
-      <Minesweeper focus={focus} setFocus={setFocus} /> */}
     </div>
   );
 }

@@ -264,6 +264,22 @@ public class MinesweeperServer extends WebSocketServer {
           t.start();
           break;
         }
+        //TODO
+        case RESTART_GAME -> {
+          // Restart the game for the specified game code
+          String gameCode = deserializedMessage.data().get("gameCode").toString();
+          GameState gameState = this.gameCodeToGameState.get(gameCode);
+
+          // Add your logic to restart the game
+          gameState.createNewBoard(0, 0);
+
+          // Optionally, send a message back to the clients to inform them about the restart
+          // You can customize this based on your communication protocol
+          Message restartMessage = generateMessage("Restarted game", MessageType.RESTART_GAME);
+          String restart = serialize(restartMessage);
+          sendToAllGameStateConnections(gameState, restart);
+          break;
+        }
         default -> {
           MessageType messageType =
               this.socketToUser.containsKey(webSocket) ? MessageType.ERROR : MessageType.JOIN_ERROR;
