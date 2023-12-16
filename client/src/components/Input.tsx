@@ -39,28 +39,65 @@ export function Input(props: InputProps) {
 
   function handleSubmit(string: string) {
     const args = string.split(" ");
-    const row: number = parseFloat(args[1]);
-    const col: number = parseFloat(args[2]);
-    switch (args[0].toLowerCase()) {
-      case "reveal":
-        if (!props.gameState.board[row][col].isFlagged) {
-          sendUpdateBoardMessage(
-            props.socket,
-            props.gameState.board[row][col],
-            "reveal"
+    if(args[0] === "help"){
+      props.setIsOpen(true);
+    }
+    else{
+      if (args.length !== 3) {
+        setStatus("Invalid number of arguments!");
+        setCommandString("");
+        return;
+      }
+      const row: number = parseFloat(args[1]);
+      const col: number = parseFloat(args[2]);
+
+      //if the row 
+      if (!(!isNaN(row) && isFinite(row) && !isNaN(col) && isFinite(col))) {
+        setStatus("For the row and column, please enter valid number digits");
+        setCommandString("");
+        return;
+      }
+
+      if (row < 0 || row >= props.gameState.board.length 
+        || col < 0 || col >= props.gameState.board[0].length) {
+        setStatus("For the row and column, please enter a number within the board");
+        setCommandString("");
+        return;
+      }
+
+      switch (args[0].toLowerCase()) {
+        case "reveal":
+          if (!props.gameState.board[row][col].isFlagged) {
+            sendUpdateBoardMessage(
+              props.socket,
+              props.gameState.board[row][col],
+              "reveal"
+            );
+          } else {
+            setStatus("You cannot reveal a block that is flagged!");
+          }
+
+          if (!props.gameState.board[row][col].isHidden) {
+            setStatus("You cannot reveal a cell that is already revealed!");
+          }
+          break;
+        case "flag":
+          if (props.gameState.board[row][col].isHidden) {
+            sendUpdateBoardMessage(
+              props.socket,
+              props.gameState.board[row][col],
+              "flag"
+            );
+          } else {
+            setStatus("You cannot flag a cell that has already been revealed!");
+          }
+          break;
+        default:
+          setStatus(
+            "Invalid command, please refer to the help button for more information!"
           );
-        }
-        break;
-      case "flag":
-        if (props.gameState.board[row][col].isHidden) {
-          sendUpdateBoardMessage(props.socket, props.gameState.board[row][col], "flag");
-        }
-        break;
-      default:
-        setStatus(
-          "Invalid command, please refer to the help button for more information!"
-        );
-        break;
+          break;
+      }
     }
     setCommandString("");
   }
