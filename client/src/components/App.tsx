@@ -107,7 +107,17 @@ function App() {
                   <p>
                     Welcome to our version of minesweeper, where you can play
                     single player or multiplayer with as many players as you
-                    want
+                    want!
+                  </p>
+                  <p>
+                    Revealing location on board: You can either click the spot
+                    that you want to reveal, or type into the command box
+                    "reveal [row] [col]" : make sure to add the spaces between
+                  </p>
+                  <p>
+                    Placing flag on board: You can either click the spot
+                    that you want to reveal, or type into the command box
+                    "reveal [row] [col]" : make sure to add the spaces between
                   </p>
                   <br></br>
                 </div>

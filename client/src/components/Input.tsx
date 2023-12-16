@@ -41,7 +41,7 @@ export function Input(props: InputProps) {
     const args = string.split(" ");
     const row: number = parseFloat(args[1]);
     const col: number = parseFloat(args[2]);
-    switch (args[0].toLocaleLowerCase()) {
+    switch (args[0].toLowerCase()) {
       case "reveal":
         if (!props.gameState.board[row][col].isFlagged) {
           sendUpdateBoardMessage(
@@ -52,11 +52,9 @@ export function Input(props: InputProps) {
         }
         break;
       case "flag":
-        sendUpdateBoardMessage(
-          props.socket,
-          props.gameState.board[row][col],
-          "flag"
-        );
+        if (props.gameState.board[row][col].isHidden) {
+          sendUpdateBoardMessage(props.socket, props.gameState.board[row][col], "flag");
+        }
         break;
       default:
         setStatus(
