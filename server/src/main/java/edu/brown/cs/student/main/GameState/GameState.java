@@ -7,10 +7,11 @@ import edu.brown.cs.student.main.User.User;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-import org.java_websocket.WebSocket;
 
+/**
+ * Represents the state of a specific Minesweeper game, including the game board,
+ * the players, and the game status.
+ */
 public class GameState {
 
   private final MinesweeperServer minesweeperServer;
@@ -20,6 +21,12 @@ public class GameState {
   private int numMoves;
   private boolean gameOver;
 
+  /**
+   * Constructs a new GameState associated with a MinesweeperServer and a specific game code.
+   *
+   * @param minesweeperServer The MinesweeperServer instance managing this game.
+   * @param gameCode The unique game code associated with this game state.
+   */
   public GameState(MinesweeperServer minesweeperServer, String gameCode) {
     this.minesweeperServer = minesweeperServer;
     this.gameCode = gameCode;
@@ -39,8 +46,10 @@ public class GameState {
   }
 
   /**
-   * Sends the updated orb data (including newly-generated orbs) to all clients connected to this
-   * GameState
+   * Sends the current board data to all clients connected to this game state.
+   * This includes the updated game board and the game over status.
+   *
+   * @param messageType The MessageType to use when sending the board data.
    */
   public void sendBoardData(MessageType messageType) {
     Map<String, Object> boardData = new HashMap<>();
@@ -52,11 +61,12 @@ public class GameState {
   }
 
 
-  //TODO: Modify this to take in arguments to customize board
   /**
+   * Creates a new game board with specified starting row and column.
+   * Initializes the board with mines and calculates the numbers for each cell.
    *
-   * @param startRow
-   * @param startCol
+   * @param startRow The starting row for the player.
+   * @param startCol The starting column for the player.
    */
   public void createNewBoard(int startRow, int startCol) {
     this.board = new Cell[10][10];
@@ -85,6 +95,12 @@ public class GameState {
     this.sendBoardData(MessageType.CURRENT_BOARD);
   }
 
+  /**
+   * Helper method to calculate the surrounding mine numbers
+   * @param row
+   * @param col
+   * @return
+   */
   private int calcSurroundingMines(int row, int col){
     int mineCount = 0;
     for(int i = -1; i <= 1; i++){
@@ -98,6 +114,11 @@ public class GameState {
     return mineCount;
   }
 
+  /**
+   * Helper method to reveal cells as necessary 
+   * @param row
+   * @param col
+   */
   private void revealCells(int row, int col){
     if(row < 0 || row >= this.board.length || col < 0 || col >= this.board[0].length)
       return;
@@ -121,10 +142,22 @@ public class GameState {
     }
   }
 
+  /**
+   * Helper method to show flag icon when right clicked
+   * @param row
+   * @param col
+   */
   private void updateFlag(int row, int col){
     this.board[row][col].setFlagged();
   }
 
+  /**
+   * Updates the board based on the action performed on a specific cell.
+   * This can be either revealing a cell or flagging a cell.
+   *
+   * @param actionCell The cell on which the action is performed.
+   * @param action The action to be performed ("reveal" or "flag").
+   */
   public void updateBoard(Cell actionCell, String action){
     if(action.equals("reveal")){
       if(numMoves == 0)
@@ -141,6 +174,9 @@ public class GameState {
 
   }
 
+  /**
+   * Resets the game to a new state, creating a new game board and resetting game parameters.
+   */
   public void createNewGame(){
     Map<String, Object> boardData = new HashMap<>();
     this.createNewBoard(0,0);

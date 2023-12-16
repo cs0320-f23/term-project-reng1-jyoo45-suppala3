@@ -2,8 +2,8 @@ import { Cell } from "../GameBoard";
 import MessageType from "./MessageType";
 
 /**
- * The default generic interface for any message sent or received to
- * the Slither+ server.
+ * Represents the default generic interface for any message sent or received to
+ * the Minesweeper server.
  */
 export default interface Message {
   /** The type (purpose) of the message sent or received */
@@ -13,29 +13,24 @@ export default interface Message {
 }
 
 /**
- * An interface representing a message sent to the server registering
- * the client for a new game, with no specified game code.
+ * Represents a message sent to the server to register the client for a new game without a specified game code.
  */
 export interface NewClientNoCodeMessage {
   /** The type (purpose) of the message sent or received */
   type: MessageType.NEW_CLIENT_NO_CODE;
-  /** The data sent with the message - the client's username */
+  /** The data sent with the message containing the client's username. */
   data: {
     username: string;
   };
 }
 
 /**
- * An interface representing a message sent to the server registering
- * the client for a presently running game, with a specified game code.
+ * Represents a message sent to the server to register the client for an already running game with a specified game code.
  */
 export interface NewClientOldCodeMessage {
   /** The type (purpose) of the message sent or received */
   type: MessageType.NEW_CLIENT_WITH_CODE;
-  /**
-   * The data sent with the message - the client's username and
-   * specified game code for the lobby to join
-   */
+  /** The data sent with the message containing the client's username and the specified game code for the lobby to join. */
   data: {
     username: string;
     gameCode: string;
@@ -43,16 +38,12 @@ export interface NewClientOldCodeMessage {
 }
 
 /**
- * An interface representing a message sent to the server registering
- * the client for a presently running game, with a specified game code.
+ * Represents a message sent to the server to update the board based on the client's action.
  */
 export interface UpdateBoardMessage {
   /** The type (purpose) of the message sent or received */
   type: MessageType.UPDATE_BOARD;
-  /**
-   * The data sent with the message - the client's username and
-   * specified game code for the lobby to join
-   */
+  /** The data sent with the message containing the cell affected and the action taken. */
   data: {
     cell: Cell;
     action: string;
@@ -60,46 +51,34 @@ export interface UpdateBoardMessage {
 }
 
 /**
- * An interface representing a message sent to the server for resetting a 
- * running game (the board should be regenerated, but the socket threads
- * should remain the same)
+ * Represents a message sent to the server to reset the current game's board.
  */
 export interface ResetBoardMessage {
   /** The type (purpose) of the message sent or received */
   type: MessageType.RESTART_GAME;
-  /**
-   * The data sent with the message - the client's username and
-   * specified game code for the lobby to join
-   */
+  /** The data sent with the message containing the game code of the lobby to reset. */
   data: {
     GameCode: string;
   };
 }
 
-
 /**
- * An interface representing a message sent to the server registering
- * the client for a presently running game, with a specified game code.
+ * Represents a message sent to the server indicating the current state of the board.
  */
 export interface CurrentBoardMessage {
   /** The type (purpose) of the message sent or received */
   type: MessageType.CURRENT_BOARD;
-  /**
-   * The data sent with the message - the client's username and
-   * specified game code for the lobby to join
-   */
+  /** The data sent with the message containing the current state of the board and the game over status. */
   data: {
     board: Cell[][];
     gameOver: boolean;
   };
 }
 
-
 /**
- * Sends a message to the server via the given websocket to register
- * the client for a new game.
- * @param socket the client's websocket for communication with the server
- * @param username the client's username
+ * Sends a message to the server to register the client for a new game without a specified game code.
+ * @param socket - The client's websocket for communication with the server.
+ * @param username - The client's username.
  */
 export function sendNewClientNoCodeMessage(
   socket: WebSocket,
@@ -115,11 +94,10 @@ export function sendNewClientNoCodeMessage(
 }
 
 /**
- * Sends a message to the server via the given websocket to register
- * the client for a joining a game with the given game code.
- * @param socket the client's websocket for communication with the server
- * @param username the client's username
- * @param gameCode the game code of the lobby to join
+ * Sends a message to the server to register the client for joining a game with the specified game code.
+ * @param socket - The client's websocket for communication with the server.
+ * @param username - The client's username.
+ * @param gameCode - The game code of the lobby to join.
  */
 export function sendNewClientWithCodeMessage(
   socket: WebSocket,
@@ -137,11 +115,10 @@ export function sendNewClientWithCodeMessage(
 }
 
 /**
- * Sends a message to the server via the given websocket to update the
- * current client's position across all other clients.
- * @param socket the client's websocket for communication with the server
- * @param add the position of the segment of the snake to add
- * @param remove the position of the segment of the snake to remove
+ * Sends a message to the server to update the game board based on the client's action.
+ * @param socket - The client's websocket for communication with the server.
+ * @param cell - The cell affected by the client's action.
+ * @param action - The action performed on the cell.
  */
 export function sendUpdateBoardMessage(
   socket: WebSocket,
@@ -159,13 +136,14 @@ export function sendUpdateBoardMessage(
 }
 
 /**
- * Sends a message to the server via the given websocket to reset
- * the board- activated when any user in the game hits reset game
- * @param socket the client's websocket for communication with the server
- * @param add the position of the segment of the snake to add
- * @param remove the position of the segment of the snake to remove
+ * Sends a message to the server to reset the game board while keeping the same game session active.
+ * @param socket - The client's websocket for communication with the server.
+ * @param gameCode - The game code of the lobby to reset.
  */
-export function sendResetBoardMessage(socket: WebSocket, gameCode:string): void {
+export function sendResetBoardMessage(
+  socket: WebSocket,
+  gameCode: string
+): void {
   const message: ResetBoardMessage = {
     type: MessageType.RESTART_GAME,
     data: {
@@ -176,13 +154,36 @@ export function sendResetBoardMessage(socket: WebSocket, gameCode:string): void 
 }
 
 /**
- * An interface representing a message received from the server to pass along
- * the current lobby's game code.
+ * Sends a message to the server to customize the game board dimensions and number of mines.
+ * @param socket - The client's websocket for communication with the server.
+ * @param rows - The number of rows for the new game board.
+ * @param cols - The number of columns for the new game board.
+ * @param mines - The number of mines for the new game board.
+ */
+export function sendCustomizeBoardMessage(
+  socket: WebSocket,
+  rows: number,
+  cols: number,
+  mines: number
+) {
+  const message = {
+    type: MessageType.CUSTOMIZE_BOARD,
+    data: {
+      rows,
+      cols,
+      mines,
+    },
+  };
+  socket.send(JSON.stringify(message));
+}
+
+/**
+ * Represents a message received from the server containing the current game code.
  */
 export interface gameCode {
   /** The type (purpose) of the message sent or received */
   type: MessageType.SET_GAME_CODE;
-  /** The data sent with the message - the current lobby's game code */
+  /** The data sent with the message containing the current lobby's game code. */
   data: {
     gameCode: string;
   };

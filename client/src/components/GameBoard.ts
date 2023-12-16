@@ -1,3 +1,17 @@
+/**
+ * @fileoverview This file defines the Cell interface and a function for creating an empty game board for Minesweeper.
+ */
+
+/**
+ * @interface Cell
+ * Represents a single cell on the Minesweeper game board.
+ *
+ * @property {number} row - The row index of the cell on the game board.
+ * @property {number} col - The column index of the cell on the game board.
+ * @property {number} val - The value of the cell, representing the number of adjacent mines. A value of -1 indicates the cell contains a mine.
+ * @property {boolean} isHidden - Indicates whether the cell is hidden or has been revealed.
+ * @property {boolean} isFlagged - Indicates whether the cell has been flagged by the player as containing a suspected mine.
+ */
 export interface Cell {
   row: number;
   col: number;
@@ -6,6 +20,15 @@ export interface Cell {
   isFlagged: boolean;
 }
 
+/**
+ * Creates and returns an empty game board for Minesweeper with the specified number of rows, columns, and mines.
+ * The board is initialized with all cells hidden and not flagged. Mines are then randomly placed on the board.
+ *
+ * @param {number} rows - The number of rows for the game board.
+ * @param {number} cols - The number of columns for the game board.
+ * @param {number} mines - The total number of mines to be placed on the board.
+ * @returns {Cell[][]} A two-dimensional array of Cell objects representing the initialized game board.
+ */
 export const createEmptyBoard = (
   rows: number,
   cols: number,

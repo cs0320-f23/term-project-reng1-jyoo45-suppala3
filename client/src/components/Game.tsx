@@ -1,8 +1,15 @@
-import { Dispatch, SetStateAction } from "react";
+/**
+ * @fileoverview This file contains the Game component, which is responsible
+ * for rendering the Slither+ game. It includes the game canvas and other
+ * game-related UI elements.
+ */
 
 /**
- * An interface representing data passed to the HTML element responsible for
- * rendering the Slither+ game
+ * @interface GameProps
+ * Defines the props for the Game component.
+ *
+ * @property {string} gameCode - The unique code of the game currently being played. This code is used to differentiate between different game sessions.
+ * @property {WebSocket} socket - The client's WebSocket instance used for real-time communication with the Slither+ server.
  */
 interface GameProps {
   /** The game code of the game current being played */
@@ -12,14 +19,11 @@ interface GameProps {
 }
 
 /**
- * Returns an HTML element that renders the Slither+ game, which includes the
- * game canvas, which renders map, snakes, and orbs, as well as the leaderboard
- * with each user's score and the game code of the current lobby.
- * @param gameState A metadata representation of the current state of the game
- * @param setGameState A function that sets the current state of the game
- * @param scores A map from each user, as a string, to their score
- * @param gameCode The game code of the game current being played
- * @returns the rendered representation of the client's current Slither+ game
+ * Game is a React Functional Component that renders the Slither+ game interface.
+ * It includes the game canvas, leaderboard, user scores, and the game code of the current lobby.
+ *
+ * @param {GameProps} props - The props for the Game component.
+ * @returns {JSX.Element} The JSX element representing the Slither+ game interface.
  */
 export default function Game({ gameCode, socket }: GameProps) {
   return <div>{gameCode}</div>;

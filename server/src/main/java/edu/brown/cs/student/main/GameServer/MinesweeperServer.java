@@ -26,6 +26,11 @@ import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
+/**
+ * The MinesweeperServer class extends WebSocketServer and is responsible for handling
+ * all WebSocket connections and messages for the Minesweeper game. It manages game states,
+ * user connections, and communication between clients and the server.
+ */
 public class MinesweeperServer extends WebSocketServer {
   private final Set<WebSocket> allConnections; // stores all connections
   private final Set<WebSocket>
@@ -39,6 +44,11 @@ public class MinesweeperServer extends WebSocketServer {
   private final Map<GameState, Set<WebSocket>>
       gameStateToSockets; // maps game states to all the websockets for users in that game
 
+  /**
+   * Constructs a new MinesweeperServer listening on the specified port.
+   *
+   * @param port The port number on which the server should listen.
+   */
   public MinesweeperServer(int port) {
     super(new InetSocketAddress(port));
     this.allConnections = new HashSet<>();
@@ -49,6 +59,12 @@ public class MinesweeperServer extends WebSocketServer {
     this.gameStateToSockets = new HashMap<>();
   }
 
+  /**
+   * Sends a message to all WebSocket connections associated with a given GameState.
+   *
+   * @param gameState   The GameState whose connections will receive the message.
+   * @param messageJson The message in JSON format to be sent.
+   */
   public void sendToAllGameStateConnections(GameState gameState, String messageJson) {
     Set<WebSocket> gameSockets = this.gameStateToSockets.get(gameState);
     for (WebSocket webSocket : gameSockets) {
@@ -57,10 +73,10 @@ public class MinesweeperServer extends WebSocketServer {
   }
 
   /**
-   * Serializes and returns a provided Message object into a JSON String.
+   * Serializes a Message object into a JSON string.
    *
-   * @param message - a Message: the Message object that needs to be serialized into a JSON String.
-   * @return a String - the serialized Message object.
+   * @param message The Message object to be serialized.
+   * @return The serialized JSON string.
    */
   public String serialize(Message message) {
     Moshi moshi = new Moshi.Builder().build();
@@ -69,13 +85,11 @@ public class MinesweeperServer extends WebSocketServer {
   }
 
   /**
-   * Takes a String message (msg) and a MessageType, and generates a Message object with this data.
+   * Generates a Message object using a string message and a MessageType.
    *
-   * @param msg - a String: The String message that is to be included within the data field of the
-   *     created Message object.
-   * @param messageType - a MessageType: The type of the Message being created (the enum value for
-   *     the type field of the created Message object).
-   * @return a Message - created using the provided msg String and MessageType.
+   * @param msg          The message content.
+   * @param messageType  The type of the message.
+   * @return A new Message object.
    */
   private Message generateMessage(String msg, MessageType messageType) {
     Map<String, Object> data = new HashMap<>();
@@ -83,6 +97,12 @@ public class MinesweeperServer extends WebSocketServer {
     return new Message(messageType, data);
   }
 
+  /**
+   * Handles the opening of a new WebSocket connection.
+   *
+   * @param webSocket The WebSocket that has been opened.
+   * @param clientHandshake The handshake data from the client.
+   */
   @Override
   public void onOpen(WebSocket webSocket, ClientHandshake clientHandshake) {
     System.out.println("server: onOpen called");
@@ -96,6 +116,14 @@ public class MinesweeperServer extends WebSocketServer {
     webSocket.send(jsonResponse);
   }
 
+  /**
+   * Handles the closing of a WebSocket connection.
+   *
+   * @param webSocket The WebSocket that has been closed.
+   * @param code The closure code.
+   * @param reason The reason for closure.
+   * @param remote Indicates whether the closure was initiated by the remote host.
+   */
   @Override
   public void onClose(WebSocket webSocket, int code, String reason, boolean remote) {
     System.out.println("server: onClose called");
@@ -118,7 +146,13 @@ public class MinesweeperServer extends WebSocketServer {
       this.gameStateToSockets.get(gameState).remove(webSocket);
     }
   }
-
+  
+  /**
+   * Handles messages received from a client WebSocket.
+   *
+   * @param webSocket The WebSocket from which the message was received.
+   * @param jsonMessage The JSON-formatted message received from the client.
+   */
   @Override
   public void onMessage(WebSocket webSocket, String jsonMessage) {
     System.out.println("server: Message received from client: " + jsonMessage);
@@ -140,6 +174,12 @@ public class MinesweeperServer extends WebSocketServer {
     }
   }
 
+  /**
+   * Handles errors that occur on the WebSocket.
+   *
+   * @param connection The WebSocket on which the error occurred.
+   * @param e The exception representing the error.
+   */
   @Override
   public void onError(WebSocket connection, Exception e) {
     if (connection != null) {
@@ -150,27 +190,58 @@ public class MinesweeperServer extends WebSocketServer {
     }
   }
 
+  /**
+   * Starts the MinesweeperServer, enabling it to accept incoming WebSocket connections.
+   * This method should be called after creating an instance of MinesweeperServer.
+   */
   @Override
   public void onStart() {
     System.out.println("server: Server started!");
   }
 
+  /**
+   * Adds a WebSocket connection to the server and associates it with a User object.
+   *
+   * @param webSocket The WebSocket connection to be added.
+   * @param user The User object associated with the WebSocket.
+   * @return true if the WebSocket is successfully added; false if it already exists.
+   */
   public boolean addWebsocketUser(WebSocket webSocket, User user) {
     if (this.socketToUser.containsKey(webSocket)) return false;
     this.socketToUser.put(webSocket, user);
     return true;
   }
 
+  /**
+   * Associates a User with a specific game code.
+   *
+   * @param gameCode The game code to associate with the User.
+   * @param user The User to be associated with the game code.
+   * @return true if the association is successful; false if the User already has an associated game code.
+   */
   public boolean addGameCodeToUser(String gameCode, User user) {
     if (this.userToGameCode.containsKey(user)) return false;
     this.userToGameCode.put(user, gameCode);
     return true;
   }
 
+  /**
+   * Retrieves a set of all existing game codes currently in use.
+   *
+   * @return A Set of Strings representing all the game codes.
+   */
   public Set<String> getExistingGameCodes() {
     return this.gameCodeToGameState.keySet();
   }
 
+  /**
+   * Adds a WebSocket to the set of connections for a specific GameState.
+   *
+   * @param gameCode The game code associated with the GameState.
+   * @param webSocket The WebSocket to add to the GameState.
+   * @return true if the WebSocket is successfully added; false if it already exists in the GameState.
+   * @throws MissingGameStateException if the GameState associated with the game code does not exist.
+   */
   public boolean addSocketToGameState(String gameCode, WebSocket webSocket)
       throws MissingGameStateException {
     GameState gameState = this.gameCodeToGameState.get(gameCode);
@@ -181,6 +252,12 @@ public class MinesweeperServer extends WebSocketServer {
     return true;
   }
 
+  /**
+   * Handles the received message from a client WebSocket.
+   *
+   * @param webSocket The WebSocket from which the message was received.
+   * @param deserializedMessage The deserialized Message object received from the client.
+   */
   public void handleOnMessage(WebSocket webSocket, Message deserializedMessage) {
     String jsonResponse;
     try {

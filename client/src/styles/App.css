@@ -1,7 +1,17 @@
+/**
+ * .App
+ * - Centers text within the app component.
+ */
 .App {
   text-align: center;
 }
 
+/**
+ * .App-header
+ * - Styles the header of the app with a dark background, vertical centering, and white text.
+ * - Uses flexible box layout to arrange items.
+ * - Adjusts font size responsively based on viewport dimensions.
+ */
 .App-header {
   background-color: #282c34;
   min-height: 8vh;
@@ -13,6 +23,12 @@
   color: white;
 }
 
+/**
+ * .page-container
+ * - A container for the main content of the page.
+ * - Uses flexbox to stack children vertically and center them horizontally.
+ * - Adds padding for better visual appearance.
+ */
 .page-container {
   display: flex;
   flex-direction: column; /* Stack children vertically */
@@ -20,41 +36,66 @@
   padding: 20px; /* Add padding for better visual appearance */
 }
 
+/**
+ * .command-bar
+ * - Container for the command input area.
+ * - Uses flexbox to align items in the center and space out elements.
+ * - Stretches to the full width of its container.
+ */
 .command-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%; /* Take the full width of the container */
-  
 }
 
+/**
+ * .command-bar input
+ * - Styles for the input element within the command bar.
+ * - Expands to fill available space, with margins for spacing.
+ */
 .command-bar input {
   flex: 1;
   margin: 0 10px;
 }
 
-/* 
-Optional: Add styles for the "Help" button */
+/**
+ * .command-bar button
+ * - Optional styles for buttons in the command bar.
+ * - Uses a borderless design, cursor pointer for interactivity, and rounded corners.
+ */
 .command-bar button {
   border: none;
-  color:#282c34;
+  color: #282c34;
   border-radius: 4px;
   cursor: pointer;
 }
 
+/**
+ * .popup-overlay
+ * - Styles for overlay used in modal or popup implementations.
+ * - Covers the entire viewport with a semi-transparent background.
+ * - Centers its content using flexbox.
+ */
 .popup-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  color:#282c34;
+  color: #282c34;
   background: rgba(0, 0, 0, 0.5); /* Semi-transparent black overlay */
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
+/**
+ * .popup-content
+ * - Styles for the content within a popup.
+ * - Uses a white background, centered text, and padding.
+ * - Limits maximum width for better readability.
+ */
 .popup-content {
   background: #fff;
   padding: 20px;
@@ -63,6 +104,12 @@ Optional: Add styles for the "Help" button */
   position: relative;
 }
 
+/**
+ * .close-button
+ * - Styles for the close button in a popup.
+ * - Positioned absolutely in the top-right corner of its parent.
+ * - Changes cursor to pointer to indicate interactivity.
+ */
 .close-button {
   position: absolute;
   top: 10px;
@@ -71,6 +118,10 @@ Optional: Add styles for the "Help" button */
   cursor: "pointer";
 }
 
-.menu{
+/**
+ * .menu
+ * - Style for a menu which may contain scrollable content.
+ */
+.menu {
   overflow: scroll;
 }

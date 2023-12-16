@@ -1,3 +1,9 @@
+/**
+ * @fileoverview This file contains the main React component for the Minesweeper game. It manages
+ * the overall game state, including the start of new games, joining existing games, customizing the
+ * game board, and handling WebSocket communications with the Minesweeper server.
+ */
+
 import "../styles/App.css";
 import Minesweeper from "./Minesweeper";
 import { Input } from "./Input";
@@ -5,16 +11,20 @@ import { useState, Dispatch, SetStateAction } from "react";
 import MessageType from "./message/MessageType";
 import {
   CurrentBoardMessage,
-  UpdateBoardMessage,
   sendNewClientNoCodeMessage,
   sendNewClientWithCodeMessage,
   sendResetBoardMessage,
+  sendCustomizeBoardMessage,
 } from "./message/Message";
 import Home from "./home/Home";
-import Game from "./Game";
 import GameState from "./game/GameState";
 import { Cell } from "./GameBoard";
 
+/**
+ * Represents the main application component for the Minesweeper game.
+ * This component is responsible for rendering the game's home screen or the game screen
+ * and managing the overall game state and WebSocket communication.
+ */
 function App() {
   const [focus, setFocus] = useState<number>(1);
   const [gameStarted, setGameStarted] = useState(false);
@@ -31,9 +41,34 @@ function App() {
     setIsOpen(false);
   };
 
-  //TODO- add restart game functionality
-  function restartGame(){
+  /**
+   * Handles the event to restart the game. It sends a message to the server
+   * requesting to reset the current game board.
+   */
+  function restartGame() {
     sendResetBoardMessage(socket, gameCode);
+  }
+
+  /**
+   * Opens a modal for customizing the game board. This function sets the state to show
+   * a modal where users can enter their desired number of rows, columns, and mines for the game board.
+   */
+  const [customRows, setCustomRows] = useState(10);
+  const [customCols, setCustomCols] = useState(10);
+  const [customMines, setCustomMines] = useState(10);
+  const [showCustomizeModal, setShowCustomizeModal] = useState(false);
+
+  function customizeBoard() {
+    setShowCustomizeModal(true);
+  }
+
+  /**
+   * Submits the board customization settings to the server. It sends a message to the server
+   * with the custom number of rows, columns, and mines and closes the customization modal.
+   */
+  function submitCustomization() {
+    sendCustomizeBoardMessage(socket, customRows, customCols, customMines);
+    setShowCustomizeModal(false);
   }
 
   return (
@@ -44,7 +79,6 @@ function App() {
 
       {gameStarted ? (
         <div>
-          
           <Input
             focus={focus}
             gameState={gameState}
@@ -52,8 +86,7 @@ function App() {
             setFocus={setFocus}
             setIsOpen={setIsOpen}
           />
-            
-       
+
           <Minesweeper
             focus={focus}
             setFocus={setFocus}
@@ -62,7 +95,7 @@ function App() {
             gameCode={gameCode}
             socket={socket}
           />
-          {isOpen && (  
+          {isOpen && (
             <div className="popup-overlay">
               <div className="popup-content">
                 <button className="close-button" onClick={closePopup}>
@@ -71,15 +104,47 @@ function App() {
                 {/* Popup menu for game*/}
                 <div className="menu">
                   <h2>To Play</h2>
-                  <p>Welcome to our version of minesweeper, where you can play single player or 
-                    multiplayer with as many players as you want
+                  <p>
+                    Welcome to our version of minesweeper, where you can play
+                    single player or multiplayer with as many players as you
+                    want
                   </p>
                   <br></br>
                 </div>
               </div>
             </div>
           )}
+          {showCustomizeModal && (
+            <div className="customize-modal">
+              <div className="modal-content">
+                <h2>Customize Board</h2>
+                <input
+                  type="number"
+                  value={customRows}
+                  onChange={(e) => setCustomRows(Number(e.target.value))}
+                  placeholder="Rows"
+                />
+                <input
+                  type="number"
+                  value={customCols}
+                  onChange={(e) => setCustomCols(Number(e.target.value))}
+                  placeholder="Columns"
+                />
+                <input
+                  type="number"
+                  value={customMines}
+                  onChange={(e) => setCustomMines(Number(e.target.value))}
+                  placeholder="Mines"
+                />
+                <button onClick={submitCustomization}>Submit</button>
+                <button onClick={() => setShowCustomizeModal(false)}>
+                  Close
+                </button>
+              </div>
+            </div>
+          )}
           <button onClick={restartGame}>Restart Game!</button>
+          <button onClick={customizeBoard}>Customize</button>
         </div>
       ) : (
         <Home
@@ -107,18 +172,18 @@ const AppConfig = {
 let socket: WebSocket;
 
 /**
- * Creates a websocket for communcation with the Slither+ server
- * @param setScores A funcion that sets the current leaderboard (set of scores) for the game
- * @param setGameStarted A function that sets whether or not the client has started playing the game
- * @param setErrorText A function that sets any error message to be rendered on the home page
- * @param setGameCode A function that sets the current lobby's game code
- * @param orbSet A list of all orbs stored in metadata form
- * @param gameState A metadata representation of the current state of the game
- * @param setGameState A function that sets the current state of the game
- * @param username The username of the client
- * @param hasGameCode A boolean representing whether or not the client is
- * joining an existing game with a game code
- * @param gameCode The game code entered by the client, if applicable
+ * Registers a WebSocket for communication with the Minesweeper server. This function
+ * is responsible for initializing the WebSocket connection and handling the events
+ * like opening the connection, receiving messages, and errors.
+ *
+ * @param setGameStarted - Function to update the state indicating whether the game has started.
+ * @param setErrorText - Function to display any error messages.
+ * @param setGameCode - Function to set the game code of the current lobby.
+ * @param gameState - The current state of the game.
+ * @param setGameState - Function to update the game state.
+ * @param username - The username of the client.
+ * @param hasGameCode - Indicates whether the client is joining a game with a specific game code.
+ * @param gameCode - The game code of the lobby to join, if applicable.
  */
 export function registerSocket(
   setGameStarted: Dispatch<SetStateAction<boolean>>,
@@ -162,7 +227,7 @@ export function registerSocket(
         break;
       }
 
-      case MessageType.RESTART_GAME:{
+      case MessageType.RESTART_GAME: {
         const newBoardMessage: CurrentBoardMessage = message;
         const board: Cell[][] = newBoardMessage.data.board;
         const newGameState: GameState = { ...gameState };
@@ -191,19 +256,6 @@ export function registerSocket(
         setGameState(newGameState);
         break;
       }
-
-      // console.log("UPDATE POSITION MESSAGE");
-      // const updatePositionMessage: UpdatePositionMessage = message;
-      // const toAdd: Position = updatePositionMessage.data.add;
-      // const toRemove: Position = updatePositionMessage.data.remove;
-      // const newGameState: GameState = { ...gameState };
-      // console.log(
-      //   "gameState otherbodies size: " + gameState.otherBodies.size
-      // );
-      // newGameState.otherBodies.delete(JSON.stringify(toRemove));
-      // newGameState.otherBodies.add(JSON.stringify(toAdd));
-      // setGameState(newGameState);
-      // break;
     }
   };
 

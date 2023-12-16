@@ -76,7 +76,7 @@ interface HomeProps {
  * @param gameState A metadata representation of the current state of the game
  * @param setGameState A function that sets the current state of the game
  * @param orbSet A list of all orbs stored in metadata form
- * @returns the home page of the Slither+ game
+ * @returns the home page of the Minesweeper game
  */
 export default function Home({
   setGameStarted,

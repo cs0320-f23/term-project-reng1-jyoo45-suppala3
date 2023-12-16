@@ -1,3 +1,8 @@
+/**
+ * @fileoverview This file contains the Minesweeper component, which is the main component for rendering
+ * the Minesweeper game interface. It handles the game board display, user interactions, and WebSocket
+ * communications for game updates.
+ */
 import React, {
   Dispatch,
   SetStateAction,
@@ -10,8 +15,18 @@ import Board from "./Board";
 import { createEmptyBoard, Cell } from "./GameBoard";
 import GameState from "./game/GameState";
 import { UpdateBoardMessage, sendUpdateBoardMessage } from "./message/Message";
-import MessageType from "./message/MessageType";
 
+/**
+ * @interface MinesweeperProps
+ * Defines the props for the Minesweeper component.
+ *
+ * @property {number} focus - Numeric state to manage focus within the component.
+ * @property {Dispatch<SetStateAction<number>>} setFocus - Function to update the focus state.
+ * @property {GameState} gameState - The current state of the game, including the game board.
+ * @property {Dispatch<SetStateAction<GameState>>} setGameState - Function to update the game state.
+ * @property {string} gameCode - The unique code of the game currently being played.
+ * @property {WebSocket} socket - The client's WebSocket instance for communication with the server.
+ */
 interface MinesweeperProps {
   focus: number;
   setFocus: Dispatch<SetStateAction<number>>;
@@ -21,6 +36,13 @@ interface MinesweeperProps {
   socket: WebSocket;
 }
 
+/**
+ * Minesweeper is a React Functional Component that provides the main interface for the Minesweeper game.
+ * It includes the game board and manages user interactions and game state updates through WebSocket communication.
+ *
+ * @param {MinesweeperProps} props - The props for the Minesweeper component.
+ * @returns {JSX.Element} The JSX element representing the Minesweeper game interface.
+ */
 const Minesweeper: React.FC<MinesweeperProps> = ({
   focus,
   setFocus,
@@ -29,18 +51,41 @@ const Minesweeper: React.FC<MinesweeperProps> = ({
   gameCode,
   socket,
 }) => {
+  /**
+   * @const gameBoard - State for storing the current game board's cell data.
+   */
   const [gameBoard, setGameBoard] = useState<Cell[][]>([]);
+  /**
+   * @const gameOver - State indicating whether the game is over.
+   */
   const [gameOver, setGameOver] = useState<boolean>(false);
+  /**
+   * @const hidden - State for tracking the number of hidden cells remaining on the board.
+   */
   const [hidden, setHidden] = useState<number>(100);
-  let mines: number = 5; // Change the number of mines as needed
+  /**
+   * @const mines - The number of mines on the game board.
+   */
+  let mines: number = 5;
 
+  /**
+   * @const ref - A reference to the HTML element of the game component, used for managing focus.
+   */
   const ref = useRef<HTMLDivElement | null>(null);
 
+  /**
+   * useEffect hook to initialize the game board.
+   * It sets up a new game board when the component mounts.
+   */
   useEffect(() => {
-    const newBoard = createEmptyBoard(10, 10, mines); // Adjust the board size and number of mines
+    const newBoard = createEmptyBoard(10, 10, mines);
     setGameBoard(newBoard);
   }, []);
 
+  /**
+   * useEffect hook to manage keyboard interactions.
+   * It listens for the "Tab" key press to shift focus within the game component.
+   */
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
       if (event.key === "Tab" && focus === 0) {
@@ -56,112 +101,22 @@ const Minesweeper: React.FC<MinesweeperProps> = ({
     };
   }, [focus]);
 
-  const revealEmptySquares = (row: number, col: number) => {
-    if (
-      row >= 0 &&
-      row < gameBoard.length &&
-      col >= 0 &&
-      col < gameBoard[0].length
-    ) {
-      const cell = gameBoard[row][col];
-
-      if (cell.isHidden && cell.val === 0) {
-        // If the cell is hidden and has no adjacent mines
-        const updatedBoard = [...gameBoard];
-        updatedBoard[row][col].isHidden = false;
-        setHidden((prevHidden) => prevHidden - 1);
-
-        // Recursively reveal adjacent empty squares
-        for (let i = -1; i <= 1; i++) {
-          for (let j = -1; j <= 1; j++) {
-            revealEmptySquares(row + i, col + j);
-          }
-        }
-      } else if (cell.isHidden && cell.val > 0) {
-        // If the cell is hidden and has adjacent mines, reveal only this cell
-        const updatedBoard = [...gameBoard];
-        updatedBoard[row][col].isHidden = false;
-        setHidden((prevHidden) => prevHidden - 1);
-        setGameBoard(updatedBoard);
-      }
-    }
-  };
-
-  const revealAllMines = () => {
-    // Helper function to reveal all mines when the game is over
-    const updatedBoard = gameBoard.map((row) =>
-      row.map((cell) => ({
-        ...cell,
-        isHidden: cell.val === -1 ? false : cell.isHidden,
-      }))
-    );
-    setGameBoard(updatedBoard);
-  };
-
-  async function initializeGameBackend() {
-    return await fetch("TODO fetch link")
-      .then(async (response) => {
-        if (response.ok) {
-          const json = await response.json();
-          setGameBoard(json["board"]);
-          mines = json["mines"];
-          setHidden(json["hidden"]);
-        }
-      })
-      .catch((error) => {
-        return undefined;
-      });
-  }
-
-  //TODO
-  //If the user left clicks, this method will be activated,
-  //prompting the backend to update by adding a flag
-
-  //The alternative is we can modify sendUpdateBoardMessage to send extra info
-  //on what to modify
-
+  /**
+   * Handles user clicks on the game board cells.
+   * @param {number} row - The row index of the clicked cell.
+   * @param {number} col - The column index of the clicked cell.
+   * @param {boolean} rightClick - Indicates if the cell was right-clicked.
+   */
   const handleCellClick = (row: number, col: number, rightClick: boolean) => {
-    // const message: UpdateBoardMessage = {
-    //   type: MessageType.UPDATE_BOARD,
-    //   data: {
-    //     cell: gameState.board[row][col],
-    //   },
-    // };
-    // socket.send(JSON.stringify(message));
-    if(!rightClick){
-      if(!gameState.board[row][col].isFlagged){
+    if (!rightClick) {
+      if (!gameState.board[row][col].isFlagged) {
         sendUpdateBoardMessage(socket, gameState.board[row][col], "reveal");
       }
-    }
-    else{
-      if(gameState.board[row][col].isHidden){
+    } else {
+      if (gameState.board[row][col].isHidden) {
         sendUpdateBoardMessage(socket, gameState.board[row][col], "flag");
       }
     }
-
-    // if (!gameOver) {
-    //   const updatedBoard = [...gameBoard];
-    //   const cell = updatedBoard[row][col];
-    //   if (cell.isHidden) {
-    //     if (cell.val === -1) {
-    //       // Clicked on a mine, reveal all mines and end the game
-    //       revealAllMines();
-    //       setGameOver(true);
-    //     } else if (cell.val === 0) {
-    //       // Clicked on an empty square, reveal adjacent empty squares
-    //       revealEmptySquares(row, col);
-    //     } else {
-    //       // Clicked on a numbered square, reveal only this cell
-    //       updatedBoard[row][col].isHidden = false;
-    //       setHidden((prevHidden) => prevHidden - 1);
-    //       setGameBoard(updatedBoard);
-    //     }
-    //     if (hidden === mines) {
-    //       // All non-mine cells are revealed, game over
-    //       setGameOver(true);
-    //     }
-    //   }
-    // }
   };
 
   console.log(gameState.gameOver);

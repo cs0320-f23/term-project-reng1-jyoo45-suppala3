@@ -1,3 +1,10 @@
+/**
+ * :root
+ * - Defines global style properties for the application.
+ * - Sets the default font family, line height, and font weight.
+ * - Applies color schemes for light and dark modes.
+ * - Includes text rendering optimizations for better legibility and appearance across browsers.
+ */
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -14,20 +21,39 @@
   -webkit-text-size-adjust: 100%;
 }
 
+/**
+ * a
+ * - Styles for anchor tags (links) with a specific font weight and color.
+ * - Inherits text decoration (usually none) to keep a consistent appearance.
+ */
 a {
   font-weight: 500;
   color: #646cff;
   text-decoration: inherit;
 }
+/**
+ * a:hover
+ * - Changes the color of links on hover for visual feedback.
+ */
 a:hover {
   color: #535bf2;
 }
 
+/**
+ * h1
+ * - Sets a large font size and line height for top-level headings (h1) for emphasis and clarity.
+ */
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
 }
 
+/**
+ * @media (prefers-color-scheme: light)
+ * - Applies specific styles when the user's system prefers a light color scheme.
+ * - Adjusts text and background colors to suit a light theme.
+ * - Modifies hover color for links and background color for buttons to align with the light theme.
+ */
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;

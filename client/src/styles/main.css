@@ -1,3 +1,8 @@
+/**
+ * body, h1, p, div
+ * - Resets the default margin and padding for the body, h1, p, and div elements to 0.
+ * - This is a common practice to standardize the look across different browsers.
+ */
 body,
 h1,
 p,
@@ -6,18 +11,33 @@ div {
   padding: 0;
 }
 
-
+/**
+ * .game
+ * - Styles for the main game container.
+ * - Centers text alignment and adds a margin at the top for visual spacing.
+ */
 .game {
   text-align: center;
   margin-top: 20px;
 }
 
+/**
+ * .minesweeper-div
+ * - Styles for the Minesweeper game wrapper.
+ * - Uses flexbox to center its content both horizontally and vertically.
+ */
 .minesweeper-div {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
+/**
+ * .minesweeper-board
+ * - Applies a grid layout to the Minesweeper board.
+ * - Defines a single column grid layout with a gap between cells.
+ * - Sets the width to 80% of its container for responsiveness.
+ */
 .minesweeper-board {
   display: grid;
   grid-template-columns: repeat(1, 1fr);
@@ -25,10 +45,20 @@ div {
   width: 80%;
 }
 
+/**
+ * .row
+ * - Styles for each row in the Minesweeper board.
+ * - Uses flexbox to evenly distribute cell elements.
+ */
 .row {
   display: flex;
 }
 
+/**
+ * .cell
+ * - Styles individual cells within the Minesweeper board.
+ * - Sets dimensions, border styling, flexbox alignment, cursor, and font properties.
+ */
 .cell {
   flex: 1;
   height: 30px;
@@ -42,12 +72,22 @@ div {
   font-weight: bold;
 }
 
+/**
+ * .hidden
+ * - Styles for hidden cells in the Minesweeper game.
+ * - Sets a different background color to visually distinguish unrevealed cells.
+ */
 .hidden {
   background-color: #ddd;
   height: 30px;
   width: 30px;
 }
 
+/**
+ * .cell:hover
+ * - Adds a hover effect to cells with a change in background color.
+ * - Enhances user interaction by providing visual feedback on hover.
+ */
 .cell:hover {
   background-color: #d3e81a;
 }
