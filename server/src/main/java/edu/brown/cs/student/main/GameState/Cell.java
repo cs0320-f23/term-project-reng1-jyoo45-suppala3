@@ -1,8 +1,8 @@
 package edu.brown.cs.student.main.GameState;
 
 /**
- * Represents a single cell in the Minesweeper game.
- * Each cell has a row and column index, a value, and states for being flagged or hidden.
+ * Represents a single cell in the Minesweeper game. Each cell has a row and column index, a value,
+ * and states for being flagged or hidden.
  */
 public class Cell {
   private int row;
@@ -21,7 +21,7 @@ public class Cell {
    * @param isHidden The initial hidden state of the cell.
    * @param isFlagged The initial flagged state of the cell.
    */
-  public Cell(int row, int col, int val, boolean isHidden, boolean isFlagged){
+  public Cell(int row, int col, int val, boolean isHidden, boolean isFlagged) {
     this.row = row;
     this.col = col;
     this.val = val;
@@ -106,10 +106,12 @@ public class Cell {
    *
    * @return true if the cell is flagged, false otherwise.
    */
-  public boolean isFlagged(){return this.isFlagged;}
+  public boolean isFlagged() {
+    return this.isFlagged;
+  }
 
-  /**
-   * Toggles the flagged state of this cell.
-   */
-  public void setFlagged(){this.isFlagged = !this.isFlagged();}
+  /** Toggles the flagged state of this cell. */
+  public void setFlagged() {
+    this.isFlagged = !this.isFlagged();
+  }
 }

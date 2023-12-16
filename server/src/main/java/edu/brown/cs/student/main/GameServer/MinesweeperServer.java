@@ -27,9 +27,9 @@ import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
 /**
- * The MinesweeperServer class extends WebSocketServer and is responsible for handling
- * all WebSocket connections and messages for the Minesweeper game. It manages game states,
- * user connections, and communication between clients and the server.
+ * The MinesweeperServer class extends WebSocketServer and is responsible for handling all WebSocket
+ * connections and messages for the Minesweeper game. It manages game states, user connections, and
+ * communication between clients and the server.
  */
 public class MinesweeperServer extends WebSocketServer {
   private final Set<WebSocket> allConnections; // stores all connections
@@ -62,7 +62,7 @@ public class MinesweeperServer extends WebSocketServer {
   /**
    * Sends a message to all WebSocket connections associated with a given GameState.
    *
-   * @param gameState   The GameState whose connections will receive the message.
+   * @param gameState The GameState whose connections will receive the message.
    * @param messageJson The message in JSON format to be sent.
    */
   public void sendToAllGameStateConnections(GameState gameState, String messageJson) {
@@ -87,8 +87,8 @@ public class MinesweeperServer extends WebSocketServer {
   /**
    * Generates a Message object using a string message and a MessageType.
    *
-   * @param msg          The message content.
-   * @param messageType  The type of the message.
+   * @param msg The message content.
+   * @param messageType The type of the message.
    * @return A new Message object.
    */
   private Message generateMessage(String msg, MessageType messageType) {
@@ -146,7 +146,7 @@ public class MinesweeperServer extends WebSocketServer {
       this.gameStateToSockets.get(gameState).remove(webSocket);
     }
   }
-  
+
   /**
    * Handles messages received from a client WebSocket.
    *
@@ -191,8 +191,8 @@ public class MinesweeperServer extends WebSocketServer {
   }
 
   /**
-   * Starts the MinesweeperServer, enabling it to accept incoming WebSocket connections.
-   * This method should be called after creating an instance of MinesweeperServer.
+   * Starts the MinesweeperServer, enabling it to accept incoming WebSocket connections. This method
+   * should be called after creating an instance of MinesweeperServer.
    */
   @Override
   public void onStart() {
@@ -217,7 +217,8 @@ public class MinesweeperServer extends WebSocketServer {
    *
    * @param gameCode The game code to associate with the User.
    * @param user The User to be associated with the game code.
-   * @return true if the association is successful; false if the User already has an associated game code.
+   * @return true if the association is successful; false if the User already has an associated game
+   *     code.
    */
   public boolean addGameCodeToUser(String gameCode, User user) {
     if (this.userToGameCode.containsKey(user)) return false;
@@ -239,8 +240,10 @@ public class MinesweeperServer extends WebSocketServer {
    *
    * @param gameCode The game code associated with the GameState.
    * @param webSocket The WebSocket to add to the GameState.
-   * @return true if the WebSocket is successfully added; false if it already exists in the GameState.
-   * @throws MissingGameStateException if the GameState associated with the game code does not exist.
+   * @return true if the WebSocket is successfully added; false if it already exists in the
+   *     GameState.
+   * @throws MissingGameStateException if the GameState associated with the game code does not
+   *     exist.
    */
   public boolean addSocketToGameState(String gameCode, WebSocket webSocket)
       throws MissingGameStateException {
@@ -324,43 +327,96 @@ public class MinesweeperServer extends WebSocketServer {
           // on which this message was received
           User user = this.socketToUser.get(webSocket);
           String gameCode = this.userToGameCode.get(user);
-          if (gameCode == null)
-            throw new UserNoGameCodeException(MessageType.ERROR);
+          if (gameCode == null) throw new UserNoGameCodeException(MessageType.ERROR);
           GameState gameState = this.gameCodeToGameState.get(gameCode);
-          if (gameState == null)
-            throw new GameCodeNoGameStateException(MessageType.ERROR);
+          if (gameState == null) throw new GameCodeNoGameStateException(MessageType.ERROR);
 
-          Thread t = new Thread(() -> {
-            try {
-              new UpdateBoardHandler().handleBoardUpdate(user, deserializedMessage, gameState, webSocket, this.gameStateToSockets.get(gameState), this);
-            } catch (MissingFieldException e) {
-              String res = this.serialize(this.generateMessage("The message sent by the client was missing a required field", e.messageType));
-              webSocket.send(res);
-            }
-          });
+          Thread t =
+              new Thread(
+                  () -> {
+                    try {
+                      new UpdateBoardHandler()
+                          .handleBoardUpdate(
+                              user,
+                              deserializedMessage,
+                              gameState,
+                              webSocket,
+                              this.gameStateToSockets.get(gameState),
+                              this);
+                    } catch (MissingFieldException e) {
+                      String res =
+                          this.serialize(
+                              this.generateMessage(
+                                  "The message sent by the client was missing a required field",
+                                  e.messageType));
+                      webSocket.send(res);
+                    }
+                  });
           t.start();
           break;
         }
-        //The implementation for the scenario where the message that the socket receives
-        //from one of the user sockets is the restarting of the game
+          // The implementation for the scenario where the message that the socket receives
+          // from one of the user sockets is the restarting of the game
         case RESTART_GAME -> {
           // Restart the game for the specified game code
           User user = this.socketToUser.get(webSocket);
           String gameCode = this.userToGameCode.get(user);
-          if (gameCode == null)
-            throw new UserNoGameCodeException(MessageType.ERROR);
+          if (gameCode == null) throw new UserNoGameCodeException(MessageType.ERROR);
           GameState gameState = this.gameCodeToGameState.get(gameCode);
-          if (gameState == null)
-            throw new GameCodeNoGameStateException(MessageType.ERROR);
+          if (gameState == null) throw new GameCodeNoGameStateException(MessageType.ERROR);
 
-          Thread t = new Thread(() -> {
-            try {
-              new ResetBoardHandler().handleBoardUpdate(user, deserializedMessage, gameState, webSocket, this.gameStateToSockets.get(gameState), this);
-            } catch (MissingFieldException e) {
-              String res = this.serialize(this.generateMessage("The message sent by the client was missing a required field", e.messageType));
-              webSocket.send(res);
-            }
-          });
+          Thread t =
+              new Thread(
+                  () -> {
+                    try {
+                      new ResetBoardHandler()
+                          .handleBoardUpdate(
+                              user,
+                              deserializedMessage,
+                              gameState,
+                              webSocket,
+                              this.gameStateToSockets.get(gameState),
+                              this);
+                    } catch (MissingFieldException e) {
+                      String res =
+                          this.serialize(
+                              this.generateMessage(
+                                  "The message sent by the client was missing a required field",
+                                  e.messageType));
+                      webSocket.send(res);
+                    }
+                  });
+          t.start();
+          break;
+        }
+        case CUSTOMIZE_BOARD -> {
+          User user = this.socketToUser.get(webSocket);
+          String gameCode = this.userToGameCode.get(user);
+          if (gameCode == null) throw new UserNoGameCodeException(MessageType.ERROR);
+          GameState gameState = this.gameCodeToGameState.get(gameCode);
+          if (gameState == null) throw new GameCodeNoGameStateException(MessageType.ERROR);
+
+          Thread t =
+              new Thread(
+                  () -> {
+                    try {
+                      new CustomizeBoardHandler()
+                          .handleBoardCustomization(
+                              user,
+                              deserializedMessage,
+                              gameState,
+                              webSocket,
+                              this.gameStateToSockets.get(gameState),
+                              this);
+                    } catch (MissingFieldException e) {
+                      String res =
+                          this.serialize(
+                              this.generateMessage(
+                                  "The message sent by the client was missing a required field",
+                                  e.messageType));
+                      webSocket.send(res);
+                    }
+                  });
           t.start();
           break;
         }
@@ -418,8 +474,8 @@ public class MinesweeperServer extends WebSocketServer {
   }
 
   /**
-   * Main method for the MinesweeperServer class. Used to instantiate an object of the MinesweeperServer
-   * class and get it to listen for WebSocket connections on port 9000.
+   * Main method for the MinesweeperServer class. Used to instantiate an object of the
+   * MinesweeperServer class and get it to listen for WebSocket connections on port 9000.
    *
    * @param args - a String array: arguments provided to the main method (unused in this case).
    */

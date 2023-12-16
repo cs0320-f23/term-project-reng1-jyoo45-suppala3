@@ -14,5 +14,6 @@ public enum MessageType {
   SUCCESS,
   JOIN_ERROR,
   RESTART_GAME,
-  JOIN_SUCCESS
+  JOIN_SUCCESS,
+  CUSTOMIZE_BOARD
 }

@@ -9,15 +9,15 @@ import edu.brown.cs.student.main.exceptions.MissingFieldException;
 import org.java_websocket.WebSocket;
 
 /**
- * Handles the creation of new clients in the Minesweeper game.
- * This class includes methods for processing new client requests both with and without game codes.
+ * Handles the creation of new clients in the Minesweeper game. This class includes methods for
+ * processing new client requests both with and without game codes.
  */
 public class NewClientHandler {
 
   /**
    * Handles the process of creating a new client that does not specify a game code.
    *
-   * @param message  The message received from the client containing necessary data.
+   * @param message The message received from the client containing necessary data.
    * @param websocket The WebSocket connection of the client.
    * @param server The MinesweeperServer instance handling the connection.
    * @return The created User object for the new client.
@@ -35,14 +35,15 @@ public class NewClientHandler {
   }
 
   /**
-   * Handles the process of creating a new client that specifies a game code.
-   * This is used for clients attempting to join an existing game.
+   * Handles the process of creating a new client that specifies a game code. This is used for
+   * clients attempting to join an existing game.
    *
-   * @param message  The message received from the client containing necessary data.
+   * @param message The message received from the client containing necessary data.
    * @param websocket The WebSocket connection of the client.
    * @param server The MinesweeperServer instance handling the connection.
    * @return The created User object for the new client.
-   * @throws MissingFieldException if the message lacks necessary data (e.g., username or game code).
+   * @throws MissingFieldException if the message lacks necessary data (e.g., username or game
+   *     code).
    * @throws ClientAlreadyExistsException if the client already exists on the server.
    * @throws IncorrectGameCodeException if the provided game code does not exist.
    */
