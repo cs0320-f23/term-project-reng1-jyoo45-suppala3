@@ -8,6 +8,7 @@ import {
   UpdateBoardMessage,
   sendNewClientNoCodeMessage,
   sendNewClientWithCodeMessage,
+  sendResetBoardMessage,
 } from "./message/Message";
 import Home from "./home/Home";
 import Game from "./Game";
@@ -30,20 +31,9 @@ function App() {
     setIsOpen(false);
   };
 
-  //TODO
+  //TODO- add restart game functionality
   function restartGame(){
-    setGameState({
-      board: [],
-      gameOver: false,
-      gameCode: gameState.gameCode,
-    });
-
-    const restartMessage = {
-      type: "RESTART_GAME",
-      gameCode: gameCode,
-    };
-
-    socket.send(JSON.stringify(restartMessage));
+    sendResetBoardMessage(socket, gameCode);
   }
 
   return (
@@ -54,20 +44,16 @@ function App() {
 
       {gameStarted ? (
         <div>
-          <div className="page-container">
-            <div className="command-bar">
-              <div>
-
-              </div>
-              <Input
-                focus={focus}
-                gameState={gameState}
-                socket={socket}
-                setFocus={setFocus}
-              />
-              <button onClick={() => setIsOpen(true)}>Help</button>
-            </div>
-          </div>
+          
+          <Input
+            focus={focus}
+            gameState={gameState}
+            socket={socket}
+            setFocus={setFocus}
+            setIsOpen={setIsOpen}
+          />
+            
+       
           <Minesweeper
             focus={focus}
             setFocus={setFocus}
@@ -82,7 +68,7 @@ function App() {
                 <button className="close-button" onClick={closePopup}>
                   X
                 </button>
-                {/* Your popup content goes here */}
+                {/* Popup menu for game*/}
                 <div className="menu">
                   <h2>To Play</h2>
                   <p>Welcome to our version of minesweeper, where you can play single player or 
@@ -173,6 +159,16 @@ export function registerSocket(
       case MessageType.JOIN_ERROR: {
         setErrorText("Error: Failed to join the game!");
         setGameStarted(false); // not truly necessary, just to be safe
+        break;
+      }
+
+      case MessageType.RESTART_GAME:{
+        const newBoardMessage: CurrentBoardMessage = message;
+        const board: Cell[][] = newBoardMessage.data.board;
+        const newGameState: GameState = { ...gameState };
+        newGameState.board = board;
+        newGameState.gameOver = newBoardMessage.data.gameOver;
+        setGameState(newGameState);
         break;
       }
 

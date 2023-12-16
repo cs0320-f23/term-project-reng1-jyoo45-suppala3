@@ -4,12 +4,15 @@ public class Cell {
   private int row;
   private int col;
   private int val;
+
+  private boolean isFlagged;
   private boolean isHidden;
-  public Cell(int row, int col, int val, boolean isHidden){
+  public Cell(int row, int col, int val, boolean isHidden, boolean isFlagged){
     this.row = row;
     this.col = col;
     this.val = val;
     this.isHidden = isHidden;
+    this.isFlagged = isFlagged;
   }
 
   public int getRow() {
@@ -37,10 +40,14 @@ public class Cell {
   }
 
   public boolean isHidden() {
-    return isHidden;
+    return this.isHidden;
   }
 
   public void setHidden(boolean hidden) {
     isHidden = hidden;
   }
+
+  public boolean isFlagged(){return this.isFlagged;}
+
+  public void setFlagged(){this.isFlagged = !this.isFlagged();}
 }

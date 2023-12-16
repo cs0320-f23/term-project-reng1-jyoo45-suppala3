@@ -264,20 +264,27 @@ public class MinesweeperServer extends WebSocketServer {
           t.start();
           break;
         }
-        //TODO
+        //The implementation for the scenario where the message that the socket receives
+        //from one of the user sockets is the restarting of the game
         case RESTART_GAME -> {
           // Restart the game for the specified game code
-          String gameCode = deserializedMessage.data().get("gameCode").toString();
+          User user = this.socketToUser.get(webSocket);
+          String gameCode = this.userToGameCode.get(user);
+          if (gameCode == null)
+            throw new UserNoGameCodeException(MessageType.ERROR);
           GameState gameState = this.gameCodeToGameState.get(gameCode);
+          if (gameState == null)
+            throw new GameCodeNoGameStateException(MessageType.ERROR);
 
-          // Add your logic to restart the game
-          gameState.createNewBoard(0, 0);
-
-          // Optionally, send a message back to the clients to inform them about the restart
-          // You can customize this based on your communication protocol
-          Message restartMessage = generateMessage("Restarted game", MessageType.RESTART_GAME);
-          String restart = serialize(restartMessage);
-          sendToAllGameStateConnections(gameState, restart);
+          Thread t = new Thread(() -> {
+            try {
+              new ResetBoardHandler().handleBoardUpdate(user, deserializedMessage, gameState, webSocket, this.gameStateToSockets.get(gameState), this);
+            } catch (MissingFieldException e) {
+              String res = this.serialize(this.generateMessage("The message sent by the client was missing a required field", e.messageType));
+              webSocket.send(res);
+            }
+          });
+          t.start();
           break;
         }
         default -> {

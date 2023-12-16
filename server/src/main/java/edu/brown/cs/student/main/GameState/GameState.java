@@ -42,15 +42,22 @@ public class GameState {
    * Sends the updated orb data (including newly-generated orbs) to all clients connected to this
    * GameState
    */
-  public void sendBoardData() {
+  public void sendBoardData(MessageType messageType) {
     Map<String, Object> boardData = new HashMap<>();
     boardData.put("board", this.board);
     boardData.put("gameOver", this.gameOver);
-    String json = this.minesweeperServer.serialize(new Message(MessageType.CURRENT_BOARD, boardData));
+    String json = this.minesweeperServer.serialize(new Message(messageType, boardData));
     System.out.println(json);
     this.minesweeperServer.sendToAllGameStateConnections(this, json);
   }
 
+
+  //TODO: Modify this to take in arguments to customize board
+  /**
+   *
+   * @param startRow
+   * @param startCol
+   */
   public void createNewBoard(int startRow, int startCol) {
     this.board = new Cell[10][10];
 
@@ -62,7 +69,7 @@ public class GameState {
       int randCol = (int)Math.floor(Math.random() * board[0].length);
       if(this.board[randRow][randCol] != null || (Math.abs(randRow - startRow) <= 1 && Math.abs(randCol - startCol) <= 1))
         continue;
-      this.board[randRow][randCol] = new Cell(randRow, randCol, -1, true);
+      this.board[randRow][randCol] = new Cell(randRow, randCol, -1, true, false);
       placedMines++;
     }
 
@@ -70,12 +77,12 @@ public class GameState {
     for(int i = 0; i < this.board.length; i++){
       for(int j = 0; j < this.board[0].length; j++){
         if(board[i][j] == null){
-          board[i][j] = new Cell(i, j, calcSurroundingMines(i, j), true);
+          board[i][j] = new Cell(i, j, calcSurroundingMines(i, j), true, false);
         }
       }
     }
     System.out.println("finished making board");
-    this.sendBoardData();
+    this.sendBoardData(MessageType.CURRENT_BOARD);
   }
 
   private int calcSurroundingMines(int row, int col){
@@ -114,12 +121,31 @@ public class GameState {
     }
   }
 
-  public void updateBoard(Cell actionCell){
-    if(numMoves == 0)
-      createNewBoard(actionCell.getRow(), actionCell.getCol());
-    System.out.println(this.board[actionCell.getRow()][actionCell.getCol()].getVal());
-    revealCells(actionCell.getRow(), actionCell.getCol());
-    this.numMoves++;
-    this.sendBoardData();
+  private void updateFlag(int row, int col){
+    this.board[row][col].setFlagged();
+  }
+
+  public void updateBoard(Cell actionCell, String action){
+    if(action.equals("reveal")){
+      if(numMoves == 0)
+        createNewBoard(actionCell.getRow(), actionCell.getCol());
+      System.out.println(this.board[actionCell.getRow()][actionCell.getCol()].getVal());
+      this.revealCells(actionCell.getRow(), actionCell.getCol());
+      this.numMoves++;
+      this.sendBoardData(MessageType.CURRENT_BOARD);
+    }
+    else if(action.equals("flag")){
+      this.updateFlag(actionCell.getRow(), actionCell.getCol());
+      this.sendBoardData(MessageType.CURRENT_BOARD);
+    }
+
+  }
+
+  public void createNewGame(){
+    Map<String, Object> boardData = new HashMap<>();
+    this.createNewBoard(0,0);
+    this.gameOver = false;
+    this.numMoves = 0;
+    this.sendBoardData(MessageType.RESTART_GAME);
   }
 }

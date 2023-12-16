@@ -3,7 +3,7 @@ import { Cell } from "./GameBoard";
 import VisualCell from "./VisualCell";
 
 interface BoardProps {
-  onCellClick: (row: number, col: number) => void;
+  onCellClick: (row: number, col: number, rightClick: boolean) => void;
   board: Cell[][];
 }
 
@@ -14,7 +14,7 @@ const Board: React.FC<BoardProps> = ({ onCellClick, board }) => {
         {board.map((row, i) => (
           <div key={i} className="row">
             {row.map((cell, k) => (
-              <VisualCell key={k} cell={cell} onClick={onCellClick} />
+              <VisualCell key={cell.row + "," + cell.col} cell={cell} onCellClick={onCellClick}/>
             ))}
           </div>
         ))}

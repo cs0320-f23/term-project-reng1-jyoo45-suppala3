@@ -1,5 +1,5 @@
 /**
- * A enum for the possible messages sent and received to the Slither+
+ * A enum for the possible messages sent and received to the our Minesweeper game
  * server via a websocket.
  */
 enum MessageType {
@@ -11,6 +11,7 @@ enum MessageType {
     ERROR = "ERROR",
     SUCCESS = "SUCCESS",
     JOIN_ERROR = "JOIN_ERROR",
+    RESTART_GAME = "RESTART_GAME",
     JOIN_SUCCESS = "JOIN_SUCCESS",
   }
   

@@ -113,7 +113,14 @@ const Minesweeper: React.FC<MinesweeperProps> = ({
       });
   }
 
-  const handleCellClick = (row: number, col: number) => {
+  //TODO
+  //If the user left clicks, this method will be activated,
+  //prompting the backend to update by adding a flag
+
+  //The alternative is we can modify sendUpdateBoardMessage to send extra info
+  //on what to modify
+
+  const handleCellClick = (row: number, col: number, rightClick: boolean) => {
     // const message: UpdateBoardMessage = {
     //   type: MessageType.UPDATE_BOARD,
     //   data: {
@@ -121,7 +128,17 @@ const Minesweeper: React.FC<MinesweeperProps> = ({
     //   },
     // };
     // socket.send(JSON.stringify(message));
-    sendUpdateBoardMessage(socket, gameState.board[row][col]);
+    if(!rightClick){
+      if(!gameState.board[row][col].isFlagged){
+        sendUpdateBoardMessage(socket, gameState.board[row][col], "reveal");
+      }
+    }
+    else{
+      if(gameState.board[row][col].isHidden){
+        sendUpdateBoardMessage(socket, gameState.board[row][col], "flag");
+      }
+    }
+
     // if (!gameOver) {
     //   const updatedBoard = [...gameBoard];
     //   const cell = updatedBoard[row][col];

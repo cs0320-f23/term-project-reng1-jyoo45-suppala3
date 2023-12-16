@@ -9,25 +9,39 @@ interface InputProps{
   setFocus: Dispatch<SetStateAction<number>>;
   gameState: GameState;
   socket: WebSocket;
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 export function Input(props: InputProps){
 
+    const [status, setStatus] = useState<String>("Enter commands below!")
     const [commandString, setCommandString] = useState<string>("");
     //const [focus, setFocus] = useState<number>(1);
 
     function handleSubmit(string: string){
         const args = string.split(" ");
+        const row: number = parseFloat(args[1]);
+        const col: number = parseFloat(args[2]);
         switch(args[0].toLocaleLowerCase()){
-            case "clear":
-              const row : number = parseFloat(args[1]);
-              const col: number = parseFloat(args[2]);
-              sendUpdateBoardMessage(props.socket, props.gameState.board[row][col]);
-              return;
+            case "reveal":
+              if(!props.gameState.board[row][col].isFlagged){
+                  sendUpdateBoardMessage(
+                    props.socket,
+                    props.gameState.board[row][col],
+                    "reveal"
+                  );
+              }
+              break;
             case "flag":
-              //add flag here
-              return;
+              sendUpdateBoardMessage(
+                props.socket,
+                props.gameState.board[row][col],
+                "flag"
+              );
+              break;
             default:
+              setStatus("Invalid command, please refer to the help button for more information!")
+              break;
               
         }
         setCommandString("");
@@ -44,19 +58,22 @@ export function Input(props: InputProps){
             }
           }}
         >
-          <ControlledInput
-            value={commandString}
-            setValue={setCommandString}
-            ariaLabel={"Command input"}
-            focus={props.focus}
-            setFocus={props.setFocus}
-          />
-          <br></br>
+          <h5>Status: {status}</h5>
 
-          {/* SUBMIT BUTTON */}
-          <button onClick={() => handleSubmit(commandString)}>
-            <div className="buttontext">Submit</div>
-          </button>
+          <div>
+            <ControlledInput
+              value={commandString}
+              setValue={setCommandString}
+              ariaLabel={"Command input"}
+              focus={props.focus}
+              setFocus={props.setFocus}
+            />
+            {/* SUBMIT BUTTON for commands*/}
+            <button onClick={() => handleSubmit(commandString)}>
+              <div className="buttontext">Submit</div>
+            </button>
+          </div>
+          <button onClick={() => props.setIsOpen(true)}>Help</button>
         </div>
       </div>
     );

@@ -34,14 +34,18 @@ public class UpdateBoardHandler {
    * @throws MissingFieldException if a cell clicked is not present in the message
    */
   public void handleBoardUpdate(User thisUser, Message message, GameState gameState, WebSocket webSocket, Set<WebSocket> gameStateSockets, MinesweeperServer server) throws MissingFieldException {
-    if (!message.data().containsKey("cell"))
+    if (!message.data().containsKey("cell") && !message.data().containsKey("action"))
       throw new MissingFieldException(message, MessageType.ERROR);
     Moshi moshi = new Moshi.Builder().build();
     JsonAdapter<Cell> jsonAdapter = moshi.adapter(Cell.class);
     Cell actionCell = jsonAdapter.fromJsonValue(message.data().get("cell"));
+
+    JsonAdapter<String> jsonAdapter2 = moshi.adapter(String.class);
+    String action = jsonAdapter2.fromJsonValue(message.data().get("action"));
+
     if(actionCell == null)
       throw new MissingFieldException(message, MessageType.ERROR);
-    gameState.updateBoard(actionCell);
+    gameState.updateBoard(actionCell, action);
   }
 
 }

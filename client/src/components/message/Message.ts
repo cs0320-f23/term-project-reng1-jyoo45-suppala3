@@ -55,6 +55,24 @@ export interface UpdateBoardMessage {
    */
   data: {
     cell: Cell;
+    action: string;
+  };
+}
+
+/**
+ * An interface representing a message sent to the server for resetting a 
+ * running game (the board should be regenerated, but the socket threads
+ * should remain the same)
+ */
+export interface ResetBoardMessage {
+  /** The type (purpose) of the message sent or received */
+  type: MessageType.RESTART_GAME;
+  /**
+   * The data sent with the message - the client's username and
+   * specified game code for the lobby to join
+   */
+  data: {
+    GameCode: string;
   };
 }
 
@@ -127,12 +145,31 @@ export function sendNewClientWithCodeMessage(
  */
 export function sendUpdateBoardMessage(
   socket: WebSocket,
-  cell: Cell
+  cell: Cell,
+  action: string
 ): void {
   const message: UpdateBoardMessage = {
     type: MessageType.UPDATE_BOARD,
     data: {
       cell: cell,
+      action: action,
+    },
+  };
+  socket.send(JSON.stringify(message));
+}
+
+/**
+ * Sends a message to the server via the given websocket to reset
+ * the board- activated when any user in the game hits reset game
+ * @param socket the client's websocket for communication with the server
+ * @param add the position of the segment of the snake to add
+ * @param remove the position of the segment of the snake to remove
+ */
+export function sendResetBoardMessage(socket: WebSocket, gameCode:string): void {
+  const message: ResetBoardMessage = {
+    type: MessageType.RESTART_GAME,
+    data: {
+      GameCode: gameCode,
     },
   };
   socket.send(JSON.stringify(message));

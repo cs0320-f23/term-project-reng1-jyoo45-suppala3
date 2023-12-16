@@ -3,6 +3,7 @@ export interface Cell {
   col: number;
   val: number;
   isHidden: boolean;
+  isFlagged: boolean;
 }
 
 export const createEmptyBoard = (
@@ -21,6 +22,7 @@ export const createEmptyBoard = (
         col: j,
         val: 0,
         isHidden: true,
+        isFlagged: false,
       };
     }
   }
