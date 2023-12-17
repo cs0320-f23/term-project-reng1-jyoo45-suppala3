@@ -110,9 +110,7 @@ function App() {
                     want!
                   </p>
 
-                  <p>
-                    All commands are zero indexed?
-                  </p>
+                  <p>All commands are zero indexed?</p>
 
                   <p>
                     Revealing location on board: You can either click the spot
