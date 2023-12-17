@@ -110,9 +110,7 @@ function App() {
                     want!
                   </p>
 
-                  <p>
-                    All commands are zero indexed?
-                  </p>
+                  <p>All commands are zero indexed?</p>
 
                   <p>
                     Revealing location on board: You can either click the spot
@@ -121,8 +119,8 @@ function App() {
                   </p>
                   <p>
                     Placing flag on board: You can either click the spot that
-                    you want to reveal, or type into the command box "reveal
-                    [row] [col]" : make sure to add the spaces between
+                    you want to reveal, or type into the command box "flag [row]
+                    [col]" : make sure to add the spaces between
                   </p>
                   <br></br>
                 </div>
