@@ -121,7 +121,7 @@ function App() {
                   </p>
                   <p>
                     Placing flag on board: You can either click the spot that
-                    you want to reveal, or type into the command box "reveal
+                    you want to flag, or type into the command box "flag
                     [row] [col]" : make sure to add the spaces between
                   </p>
                   <br></br>
