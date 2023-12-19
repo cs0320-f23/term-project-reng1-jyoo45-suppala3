@@ -119,6 +119,16 @@ const Minesweeper: React.FC<MinesweeperProps> = ({
     }
   };
 
+  const handleHover = (row: number, col: number, isHovering: boolean) => {
+    if (isHovering) {
+      
+      sendUpdateBoardMessage(socket, gameState.board[row][col], "highlight");
+      
+    } else {
+      sendUpdateBoardMessage(socket, gameState.board[row][col], "unhighlight");
+    }
+  }; 
+
   console.log(gameState.gameOver);
 
   return (
@@ -126,7 +136,7 @@ const Minesweeper: React.FC<MinesweeperProps> = ({
       <div className="game"></div>
       Game Code: {gameCode}
       {gameState.gameOver && <div>GAME OVER</div>}
-      <Board onCellClick={handleCellClick} board={gameState.board} />
+      <Board onCellClick={handleCellClick} onHover={handleHover} board={gameState.board} />
     </div>
   );
 };

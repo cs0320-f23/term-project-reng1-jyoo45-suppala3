@@ -84,3 +84,7 @@ The server uses WebSockets to communicate with clients in real-time. It handles 
 WebSockets are used in the collaborative Minesweeper game to enable real-time, bi-directional communication between the clients (players) and the server. This is crucial for multiplayer gameplay, where actions of one player need to be immediately reflected on the game boards of other players. Here's how WebSockets facilitate this:
 
 # Testing
+1. Make sure that you are in the client part of the folder
+2. Ensure that you've downloaded all the packages (npx playwright install)
+3. Start the backend server before the tests! Make sure you get the "Server Started" message
+4. Run command npx playwright test

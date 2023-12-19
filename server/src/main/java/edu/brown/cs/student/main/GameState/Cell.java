@@ -12,6 +12,8 @@ public class Cell {
   private boolean isFlagged;
   private boolean isHidden;
 
+  private boolean isHighlighted;
+
   /**
    * Constructs a Cell with specified row, column, value, hidden state, and flagged state.
    *
@@ -21,12 +23,13 @@ public class Cell {
    * @param isHidden The initial hidden state of the cell.
    * @param isFlagged The initial flagged state of the cell.
    */
-  public Cell(int row, int col, int val, boolean isHidden, boolean isFlagged) {
+  public Cell(int row, int col, int val, boolean isHidden, boolean isFlagged, boolean isHighlighted) {
     this.row = row;
     this.col = col;
     this.val = val;
     this.isHidden = isHidden;
     this.isFlagged = isFlagged;
+    this.isHighlighted = isHighlighted;
   }
 
   /**
@@ -114,4 +117,8 @@ public class Cell {
   public void setFlagged() {
     this.isFlagged = !this.isFlagged();
   }
+
+  public boolean isHighlighted(){return this.isHighlighted;}
+
+  public void setHighlighted(boolean isHighlighted){this.isHighlighted = isHighlighted;}
 }

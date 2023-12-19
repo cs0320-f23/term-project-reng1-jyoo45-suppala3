@@ -18,6 +18,7 @@ export interface Cell {
   val: number;
   isHidden: boolean;
   isFlagged: boolean;
+  isHighlighted: boolean;
 }
 
 /**
@@ -46,6 +47,7 @@ export const createEmptyBoard = (
         val: 0,
         isHidden: true,
         isFlagged: false,
+        isHighlighted: false,
       };
     }
   }
