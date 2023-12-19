@@ -24,6 +24,7 @@ public class GameState {
   private int numCols;
   private int numMines;
   private int numHidden;
+  private boolean mock;
 
   /**
    * Constructs a new GameState associated with a MinesweeperServer and a specific game code.
@@ -31,7 +32,7 @@ public class GameState {
    * @param minesweeperServer The MinesweeperServer instance managing this game.
    * @param gameCode The unique game code associated with this game state.
    */
-  public GameState(MinesweeperServer minesweeperServer, String gameCode) {
+  public GameState(MinesweeperServer minesweeperServer, String gameCode, boolean mock) {
     this.minesweeperServer = minesweeperServer;
     this.gameCode = gameCode;
     this.numRows = 10;
@@ -42,6 +43,7 @@ public class GameState {
     this.numMoves = 0;
     this.gameOver = false;
     this.numHidden = this.numRows * this.numCols;
+    this.mock = mock;
   }
 
   /**
@@ -60,6 +62,8 @@ public class GameState {
    * @param messageType The MessageType to use when sending the board data.
    */
   public void sendBoardData(MessageType messageType) {
+    if(this.mock)
+      return;
     Map<String, Object> boardData = new HashMap<>();
     boardData.put("board", this.board);
     boardData.put("gameOver", this.gameOver);
@@ -79,7 +83,7 @@ public class GameState {
     this.board = new Cell[this.numRows][this.numCols];
     this.numHidden = this.numRows * this.numCols;
 
-    System.out.println("starting mine creation");
+//    System.out.println("starting mine creation");
     int placedMines = 0;
     while (placedMines < this.numMines) {
       int randRow = (int) Math.floor(Math.random() * board.length);
@@ -90,7 +94,7 @@ public class GameState {
       placedMines++;
     }
 
-    System.out.println("populating neighboring cells");
+//    System.out.println("populating neighboring cells");
     for (int i = 0; i < this.board.length; i++) {
       for (int j = 0; j < this.board[0].length; j++) {
         if (board[i][j] == null) {
@@ -98,7 +102,7 @@ public class GameState {
         }
       }
     }
-    System.out.println("finished making board");
+//    System.out.println("finished making board");
     this.sendBoardData(MessageType.CURRENT_BOARD);
   }
 
@@ -135,11 +139,7 @@ public class GameState {
     if (row < 0 || row >= this.board.length || col < 0 || col >= this.board[0].length) return;
     else if (this.board[row][col].getVal() == -1) {
       this.gameOver = true;
-      for (int i = 0; i < this.board.length; i++) {
-        for (int j = 0; j < this.board[0].length; j++) {
-          this.board[i][j].setHidden(false);
-        }
-      }
+      this.revealBoard();
     } else if (this.board[row][col].isHidden() && this.board[row][col].getVal() >= 0) {
       this.board[row][col].setHidden(false);
       this.numHidden--;
@@ -151,8 +151,18 @@ public class GameState {
         }
       }
     }
-    if(this.numHidden == this.numMines)
+    if (this.numHidden == this.numMines){
       this.gameOver = true;
+      this.revealBoard();
+    }
+  }
+
+  private void revealBoard(){
+    for (int i = 0; i < this.board.length; i++) {
+      for (int j = 0; j < this.board[0].length; j++) {
+        this.board[i][j].setHidden(false);
+      }
+    }
   }
 
   /**
@@ -194,10 +204,14 @@ public class GameState {
     this.sendBoardData(MessageType.RESTART_GAME);
   }
 
-  public void customizeBoard(int numRows, int numCols, int numMines){
+  public void customizeBoard(int numRows, int numCols, int numMines) {
     this.numRows = numRows;
     this.numCols = numCols;
     this.numMines = numMines;
     this.createNewBoard(0, 0);
+  }
+
+  public Cell[][] getBoard(){
+    return this.board;
   }
 }
