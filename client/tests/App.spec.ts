@@ -72,7 +72,7 @@ test("When I input a command to reveal a cell, it reveals it", async ({
   // check that the number of hidden cells is not 100? to ensure that a cell is revealed
 });
 
-test("restart game button resets the game", async ({ page }) => {
+test("Restart game button resets the game", async ({ page }) => {
   await page.getByPlaceholder("Type your username here:").click();
   await page.getByPlaceholder("Type your username here:").fill("user");
   await page.getByRole("button", { name: "Create a new game" }).click();
@@ -108,7 +108,7 @@ test("help button shows the instruction of how to play the game", async ({
     .isVisible();
 });
 
-test("right click displays a flag", async ({ page }) => {
+test("a right click displays a flag", async ({ page }) => {
   await page.getByPlaceholder("Type your username here:").click();
   await page.getByPlaceholder("Type your username here:").fill("user");
   await page.getByRole("button", { name: "Create a new game" }).click();
