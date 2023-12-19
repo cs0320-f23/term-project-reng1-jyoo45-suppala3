@@ -8,6 +8,7 @@ test("username input should accept text", async ({ page }) => {
   await page.getByPlaceholder("Type your username here:").click();
   await page.getByPlaceholder("Type your username here:").fill("TestUser");
   await page.getByLabel("Create Game Button").click();
+  await expect(page.getByText("TestUser")).toBeVisible;
 });
 
 test("username field should not be empty", async ({ page }) => {
@@ -24,12 +25,13 @@ test("game code input should accept text", async ({ page }) => {
   await page.getByPlaceholder("Enter gamecode here:").click();
   await page.getByPlaceholder("Enter gamecode here:").fill("12345");
   await page.getByLabel("Join Game Button").click();
+  await expect(page.getByText("12345")).toBeVisible;
 });
 
 test("join game with code and expect error", async ({ page }) => {
   await page.getByPlaceholder("Type your username here:").fill("TestUser");
   await page.getByPlaceholder("Enter gamecode here:").fill("12345");
-  await expect(page.getByTestId("error-text")).toHaveText(" ");
+  await expect(page.getByText("Error: Failed to join the game!")).toBeVisible;
 });
 
 test("when I join the game, I see a board", async ({ page }) => {
@@ -65,7 +67,7 @@ test("Restart game button resets the game", async ({ page }) => {
   await page.getByLabel("Create Game Button").click();
   await page.locator(".cell").first().click();
   await page.getByLabel("Restart").click();
-  //check that the number of hidden cell is 100
+  await expect(page.getByText("1")).toBeHidden();
 });
 
 test("Customize board should change board size", async ({ page }) => {
