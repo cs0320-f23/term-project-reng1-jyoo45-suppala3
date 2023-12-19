@@ -39,10 +39,9 @@ export function Input(props: InputProps) {
 
   function handleSubmit(string: string) {
     const args = string.split(" ");
-    if(args[0] === "help"){
+    if (args[0] === "help") {
       props.setIsOpen(true);
-    }
-    else{
+    } else {
       if (args.length !== 3) {
         setStatus("Invalid number of arguments!");
         setCommandString("");
@@ -51,16 +50,22 @@ export function Input(props: InputProps) {
       const row: number = parseFloat(args[1]);
       const col: number = parseFloat(args[2]);
 
-      //if the row 
+      //if the row
       if (!(!isNaN(row) && isFinite(row) && !isNaN(col) && isFinite(col))) {
         setStatus("For the row and column, please enter valid number digits");
         setCommandString("");
         return;
       }
 
-      if (row < 0 || row >= props.gameState.board.length 
-        || col < 0 || col >= props.gameState.board[0].length) {
-        setStatus("For the row and column, please enter a number within the board");
+      if (
+        row < 0 ||
+        row >= props.gameState.board.length ||
+        col < 0 ||
+        col >= props.gameState.board[0].length
+      ) {
+        setStatus(
+          "For the row and column, please enter a number within the board"
+        );
         setCommandString("");
         return;
       }
@@ -128,7 +133,9 @@ export function Input(props: InputProps) {
             <div className="buttontext">Submit</div>
           </button>
         </div>
-        <button onClick={() => props.setIsOpen(true)}>Help</button>
+        <button onClick={() => props.setIsOpen(true)} aria-label={"Help"}>
+          Help
+        </button>
       </div>
     </div>
   );

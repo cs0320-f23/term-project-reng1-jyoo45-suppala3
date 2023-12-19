@@ -119,8 +119,8 @@ function App() {
                   </p>
                   <p>
                     Placing flag on board: You can either click the spot that
-                    you want to flag, or type into the command box "flag
-                    [row] [col]" : make sure to add the spaces between
+                    you want to flag, or type into the command box "flag [row]
+                    [col]" : make sure to add the spaces between
                   </p>
                   <br></br>
                 </div>
@@ -149,15 +149,21 @@ function App() {
                   onChange={(e) => setCustomMines(Number(e.target.value))}
                   placeholder="Mines"
                 />
-                <button onClick={submitCustomization}>Submit</button>
+                <button onClick={submitCustomization} aria-label={"Submit"}>
+                  Submit
+                </button>
                 <button onClick={() => setShowCustomizeModal(false)}>
                   Close
                 </button>
               </div>
             </div>
           )}
-          <button onClick={restartGame}>Restart Game!</button>
-          <button onClick={customizeBoard}>Customize</button>
+          <button onClick={restartGame} aria-label={"Restart"}>
+            Restart Game!
+          </button>
+          <button onClick={customizeBoard} aria-label={"Customize"}>
+            Customize
+          </button>
         </div>
       ) : (
         <Home
