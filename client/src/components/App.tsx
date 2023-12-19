@@ -188,7 +188,7 @@ const AppConfig = {
 };
 
 /** The client's websocket for communication with the server */
-let socket: WebSocket;
+export let socket: WebSocket;
 
 /**
  * Registers a WebSocket for communication with the Minesweeper server. This function

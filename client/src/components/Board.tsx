@@ -35,6 +35,7 @@ const Board: React.FC<BoardProps> = ({ onCellClick, onHover, board }) => {
           <div key={i} className="row">
             {row.map((cell, k) => (
               <VisualCell
+                key={cell.row + "," + cell.col}
                 aria-label={`cell-${cell.row}-${cell.col}`}
                 cell={cell}
                 onCellClick={onCellClick}

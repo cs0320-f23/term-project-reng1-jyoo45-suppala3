@@ -61,6 +61,7 @@ test("When I input a command to reveal a cell, it reveals it", async ({
   // check that the number of hidden cells is not 100? to ensure that a cell is revealed
 });
 
+
 test("Restart game button resets the game", async ({ page }) => {
   await page.getByPlaceholder("Type your username here:").click();
   await page.getByPlaceholder("Type your username here:").fill("user");
@@ -78,6 +79,15 @@ test("Customize board should change board size", async ({ page }) => {
   await page.getByPlaceholder("Columns").fill("20");
   await page.getByLabel("Submit").click();
   // Verify the board has been customized? somehow access the row value of the minesweeper-board? or that the hidden cells are 400?
+
+  for(let i = 0; i < 20; i++){
+    for(let n = 0; n < 20; n++){
+      const cellSelector = `[aria-label="cell-${i}-${n}"]`;
+
+      // Example usage in a Playwright test
+      await expect(page.getByLabel(cellSelector)).toBeVisible;
+    }
+  }
 });
 
 test("help button shows the instruction of how to play the game", async ({
