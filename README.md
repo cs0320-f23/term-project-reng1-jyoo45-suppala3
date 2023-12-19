@@ -40,7 +40,9 @@ cd ../client
 npm start
 ```
 
-The client will be accessible at http://localhost:3000 in your web browser. You can then start playing a game by entering your username and creating a new game. More players can join by entering the GameCode which is displayed at the top of the screen of the user who created the game.
+The client will be accessible at http://localhost:8000 in your web browser. You can then start playing a game by entering your username and creating a new game. More players can join by entering the GameCode which is displayed at the top of the screen of the user who created the game.
+
+4. Plawright- npx playwright install to get dependencies
 
 # Gameplay
 
@@ -80,3 +82,5 @@ The server manages the state of the game, including the positions of mines, the 
 The server uses WebSockets to communicate with clients in real-time. It handles incoming messages (like a player's move), processes them, and sends back responses (like updated board state). The server manages player sessions and game instances, allowing multiple games to occur simultaneously. It handles players joining and leaving games, creating new game instances, and maintaining individual game sessions.
 
 WebSockets are used in the collaborative Minesweeper game to enable real-time, bi-directional communication between the clients (players) and the server. This is crucial for multiplayer gameplay, where actions of one player need to be immediately reflected on the game boards of other players. Here's how WebSockets facilitate this:
+
+# Testing
