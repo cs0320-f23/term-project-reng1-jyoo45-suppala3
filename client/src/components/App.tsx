@@ -19,6 +19,7 @@ import {
 import Home from "./home/Home";
 import GameState from "./game/GameState";
 import { Cell } from "./GameBoard";
+import React from "react";
 
 /**
  * Represents the main application component for the Minesweeper game.

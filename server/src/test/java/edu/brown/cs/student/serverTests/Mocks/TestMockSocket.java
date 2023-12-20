@@ -1,6 +1,10 @@
 package edu.brown.cs.student.serverTests.Mocks;
 
+import com.squareup.moshi.Json;
+import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.Moshi;
 import edu.brown.cs.student.main.GameServer.MinesweeperServer;
+import edu.brown.cs.student.main.GameState.Cell;
 import edu.brown.cs.student.main.GameState.GameState;
 import edu.brown.cs.student.main.Message.Message;
 import edu.brown.cs.student.main.Message.MessageType;
@@ -12,7 +16,7 @@ import org.testng.Assert;
 
 public class TestMockSocket {
 
-  private GameState gameState;
+  private MockGameState mockGameState;
 
   private MinesweeperServer server;
   private int port;
@@ -20,7 +24,13 @@ public class TestMockSocket {
   public void setupServer(){
     this.port = 0;
     this.server = new MinesweeperServer(this.port);
-    this.gameState = new GameState(this.server, "0", true);
+    this.mockGameState = new MockGameState(this.server, "0", false);
+
+    for(int i = 0; i < 10; i++){
+      for(int n = 0; n < 10; n++){
+        this.mockGameState.getBoard()[i][n] = new Cell(0,0,0, true, false, false);
+      }
+    }
   }
   @Test
   public void testNewClientHandler() throws MissingFieldException {
@@ -47,7 +57,67 @@ public class TestMockSocket {
   }
 
   @Test
-  public void testUpdateBoardHandler() {
+  public void testUpdateBoardHandlerFlag() throws MissingFieldException {
+    HashMap<String, Object> data = new HashMap<>();
+    MockUpdateBoardHandler boardHandler = new MockUpdateBoardHandler();
+
+    //this should fail as we need args for the cell and action
+    Message message = new Message(MessageType.UPDATE_BOARD, data);
+    Assert.assertThrows(MissingFieldException.class, () -> boardHandler.handleBoardUpdate(message, this.mockGameState, this.server));
+
+
+    Cell cell = new Cell(0, 0, 0, false, false, false);
+    Moshi moshi = new Moshi.Builder().build();
+    JsonAdapter<Cell> jsonAdapter = moshi.adapter(Cell.class);
+    Object serializedCell = jsonAdapter.toJsonValue(cell);
+
+    //should be successful
+    data.put("cell", serializedCell);
+
+    JsonAdapter<String> jsonAdapter2 = moshi.adapter(String.class);
+    Object serializedText = jsonAdapter2.toJsonValue("flag");
+    data.put("action", serializedText);
+
+    //the state of isFlagged should change
+    Assert.assertEquals(mockGameState.getBoard()[0][0].isFlagged(), false);
+    boardHandler.handleBoardUpdate(message, this.mockGameState, this.server);
+    Assert.assertEquals(mockGameState.getBoard()[0][0].isFlagged(), true);
+
+    //We can toggle back if the same message is sent again
+    boardHandler.handleBoardUpdate(message, this.mockGameState, this.server);
+    Assert.assertEquals(mockGameState.getBoard()[0][0].isFlagged(), false);
+  }
+
+  /**
+   * Testing the reveal of cells
+   * @throws MissingFieldException- for handling the case if the arguments in our message are bad
+   */
+  @Test
+  public void testUpdateBoardHandlerReveal() throws MissingFieldException {
+    HashMap<String, Object> data = new HashMap<>();
+    MockUpdateBoardHandler boardHandler = new MockUpdateBoardHandler();
+
+
+    //this should fail as we need args for the action too
+    Message message = new Message(MessageType.UPDATE_BOARD, data);
+
+    Cell cell = new Cell(0, 0, 0, true, false, false);
+    Moshi moshi = new Moshi.Builder().build();
+    JsonAdapter<Cell> jsonAdapter = moshi.adapter(Cell.class);
+    Object serializedCell = jsonAdapter.toJsonValue(cell);
+
+    data.put("cell", serializedCell);
+    Assert.assertThrows(MissingFieldException.class, () -> boardHandler.handleBoardUpdate(message, this.mockGameState, this.server));
+
+    //should be successful now that we have an action too
+    JsonAdapter<String> jsonAdapter2 = moshi.adapter(String.class);
+    Object serializedText = jsonAdapter2.toJsonValue("reveal");
+    data.put("action", serializedText);
+
+    //the state of isHidden should change
+    Assert.assertEquals(mockGameState.getBoard()[0][0].isHidden(), true);
+    boardHandler.handleBoardUpdate(message, this.mockGameState, this.server);
+    Assert.assertEquals(mockGameState.getBoard()[0][0].isHidden(), false);
 
   }
 

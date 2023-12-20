@@ -69,10 +69,10 @@ public class TestGameState {
   @Test
   public void testFlagBoard(){
     this.gameState.createNewBoard(0, 0);
-    this.gameState.updateBoard(new Cell(2, 2, 0,true,  false), "flag");
+    this.gameState.updateBoard(new Cell(2, 2, 0,true, false, false), "flag");
     assertTrue(this.gameState.getBoard()[2][2].isFlagged());
     assertFalse(this.gameState.getBoard()[2][6].isFlagged());
-    this.gameState.updateBoard(new Cell(2, 2, 0,true,  false), "flag");
+    this.gameState.updateBoard(new Cell(2, 2, 0,true, false, false), "flag");
     assertFalse(this.gameState.getBoard()[2][2].isFlagged());
   }
 }

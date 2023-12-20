@@ -7,6 +7,7 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { ControlledInput } from "./ControlledInput";
 import { sendUpdateBoardMessage } from "./message/Message";
 import GameState from "./game/GameState";
+import React from "react";
 
 /**
  * @interface InputProps

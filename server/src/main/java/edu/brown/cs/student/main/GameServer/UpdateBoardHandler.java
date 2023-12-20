@@ -38,7 +38,7 @@ public class UpdateBoardHandler {
       Set<WebSocket> gameStateSockets,
       MinesweeperServer server)
       throws MissingFieldException {
-    if (!message.data().containsKey("cell") && !message.data().containsKey("action"))
+    if (!message.data().containsKey("cell") || !message.data().containsKey("action"))
       throw new MissingFieldException(message, MessageType.ERROR);
     Moshi moshi = new Moshi.Builder().build();
     JsonAdapter<Cell> jsonAdapter = moshi.adapter(Cell.class);
