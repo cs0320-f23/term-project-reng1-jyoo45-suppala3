@@ -17,6 +17,7 @@ import VisualCell from "./VisualCell";
 interface BoardProps {
   onCellClick: (row: number, col: number, rightClick: boolean) => void;
   board: Cell[][];
+  onHover: (row: number, col: number, isHovering: boolean) => void;
 }
 
 /**
@@ -26,7 +27,7 @@ interface BoardProps {
  * @param {BoardProps} props - The props for the Board component.
  * @returns {JSX.Element} The JSX element representing the Minesweeper board.
  */
-const Board: React.FC<BoardProps> = ({ onCellClick, board }) => {
+const Board: React.FC<BoardProps> = ({ onCellClick, onHover, board }) => {
   return (
     <div className="minesweeper-div">
       <div className="minesweeper-board">
@@ -35,8 +36,10 @@ const Board: React.FC<BoardProps> = ({ onCellClick, board }) => {
             {row.map((cell, k) => (
               <VisualCell
                 key={cell.row + "," + cell.col}
+                aria-label={`cell-${cell.row}-${cell.col}`}
                 cell={cell}
                 onCellClick={onCellClick}
+                onHover={onHover}
               />
             ))}
           </div>

@@ -4,6 +4,7 @@
  */
 import React from "react";
 import { Cell } from "./GameBoard";
+import "../styles/VisualCell.css";
 
 /**
  * @interface VisualCellProps
@@ -16,6 +17,7 @@ import { Cell } from "./GameBoard";
 interface VisualCellProps {
   cell: Cell;
   onCellClick: (row: number, col: number, rightClick: boolean) => void;
+  onHover: (row: number, col: number, isHovering: boolean) => void;
 }
 
 /**
@@ -25,15 +27,26 @@ interface VisualCellProps {
  * @param {VisualCellProps} props - The props for the VisualCell component.
  * @returns {JSX.Element} A JSX element representing a cell on the Minesweeper game board.
  */
-const VisualCell: React.FC<VisualCellProps> = ({ cell, onCellClick }) => {
+const VisualCell: React.FC<VisualCellProps> = ({ cell, onCellClick, onHover }) => {
   return (
     <div
-      className={`cell ${cell.isHidden ? "hidden" : ""}`}
+      className={`cell ${cell.isHidden ? "hidden" : ""} ${cell.isHighlighted ? "highlighted" : ""}`}
       onClick={() => onCellClick(cell.row, cell.col, false)}
       onContextMenu={(e) => {
         e.preventDefault();
         console.log("right click");
         onCellClick(cell.row, cell.col, true);
+      }}
+      onMouseEnter={() => {
+        //should prompt the board to highlight when off
+        console.log("hover on");
+        onHover(cell.row, cell.col, true);
+      }}
+      onMouseLeave={() => {
+        //should prompt the board to stop highlighting the visual cell for all
+        //users when off
+        console.log("hover off");
+        onHover(cell.row, cell.col, false);
       }}
     >
       {cell.isFlagged && (

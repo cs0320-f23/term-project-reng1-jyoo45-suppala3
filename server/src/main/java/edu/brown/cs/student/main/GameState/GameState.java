@@ -90,7 +90,7 @@ public class GameState {
       int randCol = (int) Math.floor(Math.random() * board[0].length);
       if (this.board[randRow][randCol] != null
           || (Math.abs(randRow - startRow) <= 1 && Math.abs(randCol - startCol) <= 1)) continue;
-      this.board[randRow][randCol] = new Cell(randRow, randCol, -1, true, false);
+      this.board[randRow][randCol] = new Cell(randRow, randCol, -1, true, false, false);
       placedMines++;
     }
 
@@ -98,7 +98,7 @@ public class GameState {
     for (int i = 0; i < this.board.length; i++) {
       for (int j = 0; j < this.board[0].length; j++) {
         if (board[i][j] == null) {
-          board[i][j] = new Cell(i, j, calcSurroundingMines(i, j), true, false);
+          board[i][j] = new Cell(i, j, calcSurroundingMines(i, j), true, false, false);
         }
       }
     }
@@ -141,8 +141,10 @@ public class GameState {
       this.gameOver = true;
       this.revealBoard();
     } else if (this.board[row][col].isHidden() && this.board[row][col].getVal() >= 0) {
-      this.board[row][col].setHidden(false);
-      this.numHidden--;
+      if(!board[row][col].isFlagged()){
+        this.board[row][col].setHidden(false);
+        this.numHidden--;
+      }
       if (this.board[row][col].getVal() == 0) {
         for (int i = -1; i <= 1; i++) {
           for (int j = -1; j <= 1; j++) {
@@ -188,11 +190,16 @@ public class GameState {
       System.out.println(this.board[actionCell.getRow()][actionCell.getCol()].getVal());
       this.revealCells(actionCell.getRow(), actionCell.getCol());
       this.numMoves++;
-      this.sendBoardData(MessageType.CURRENT_BOARD);
     } else if (action.equals("flag")) {
       this.updateFlag(actionCell.getRow(), actionCell.getCol());
-      this.sendBoardData(MessageType.CURRENT_BOARD);
     }
+    else if(action.equals("highlight")){
+      this.board[actionCell.getRow()][actionCell.getCol()].setHighlighted(true);
+    }
+    else if(action.equals("unhighlight")){
+      this.board[actionCell.getRow()][actionCell.getCol()].setHighlighted(false);
+    }
+    this.sendBoardData(MessageType.CURRENT_BOARD);
   }
 
   /** Resets the game to a new state, creating a new game board and resetting game parameters. */

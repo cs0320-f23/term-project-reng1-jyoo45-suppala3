@@ -107,7 +107,20 @@ function App() {
                   <p>
                     Welcome to our version of minesweeper, where you can play
                     single player or multiplayer with as many players as you
-                    want
+                    want!
+                  </p>
+
+                  <p>All commands are zero indexed?</p>
+
+                  <p>
+                    Revealing location on board: You can either click the spot
+                    that you want to reveal, or type into the command box
+                    "reveal [row] [col]" : make sure to add the spaces between
+                  </p>
+                  <p>
+                    Placing flag on board: You can either click the spot that
+                    you want to flag, or type into the command box "flag [row]
+                    [col]" : make sure to add the spaces between
                   </p>
                   <br></br>
                 </div>
@@ -136,15 +149,21 @@ function App() {
                   onChange={(e) => setCustomMines(Number(e.target.value))}
                   placeholder="Mines"
                 />
-                <button onClick={submitCustomization}>Submit</button>
+                <button onClick={submitCustomization} aria-label={"Submit"}>
+                  Submit
+                </button>
                 <button onClick={() => setShowCustomizeModal(false)}>
                   Close
                 </button>
               </div>
             </div>
           )}
-          <button onClick={restartGame}>Restart Game!</button>
-          <button onClick={customizeBoard}>Customize</button>
+          <button onClick={restartGame} aria-label={"Restart"}>
+            Restart Game!
+          </button>
+          <button onClick={customizeBoard} aria-label={"Customize"}>
+            Customize
+          </button>
         </div>
       ) : (
         <Home
@@ -169,7 +188,7 @@ const AppConfig = {
 };
 
 /** The client's websocket for communication with the server */
-let socket: WebSocket;
+export let socket: WebSocket;
 
 /**
  * Registers a WebSocket for communication with the Minesweeper server. This function

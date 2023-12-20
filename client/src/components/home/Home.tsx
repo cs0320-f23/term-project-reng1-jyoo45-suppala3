@@ -150,10 +150,16 @@ export default function Home({
           }
         }}
         placeholder="Type your username here:"
+        aria-label={"Username Input"}
       />
-      <p>{errorText}</p>
+      <p aria-label="error-text" data-testid="error-text">
+        {" "}
+        {errorText}
+      </p>
       <span>
-        <button onClick={startNewGame}>Create a new game</button>
+        <button onClick={startNewGame} aria-label={"Create Game Button"}>
+          Create a new game
+        </button>{" "}
         <h4>OR</h4>
         <h4>Join with a game code</h4>
         <ControlledInput
@@ -161,9 +167,12 @@ export default function Home({
           setValue={setInputGamecode}
           onEnter={startGameWithCode}
           placeholder="Enter gamecode here:"
+          aria-label={"Gamecode Input"}
         />
         <br />
-        <button onClick={startGameWithCode}>Join with a game code</button>
+        <button onClick={startGameWithCode} aria-label={"Join Game Button"}>
+          Join with a game code
+        </button>{" "}
       </span>
     </div>
   );

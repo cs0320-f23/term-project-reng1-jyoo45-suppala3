@@ -1,13 +1,13 @@
 {
-  "name": "maps-gearup",
+  "name": "cs32-minesweeper",
   "version": "22.2.0",
-  "description": "Brown CSCI0320 Sprint 3 Gearup for Fall 2023",
+  "description": "Final project!",
   "license": "UNLICENSED",
   "dependencies": {
     "@types/node": "^16.11.36",
     "@types/react": "^18.0.9",
     "@types/react-dom": "^18.0.4",
-    "playwright": "^1.39.0",
+    "playwright": "^1.40.1",
     "react": "^18.2.0",
     "react-dom": "^18.1.0",
     "typescript": "^4.6.4"

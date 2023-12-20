@@ -1,3 +1,7 @@
 .hidden {
   width: "auto";
 }
+
+.highlighted {
+  background-color: #d3e81a;
+}
