@@ -1,2 +1,5 @@
-package edu.brown.cs.student.serverTests.Mocks;public class MockGameState {
+package edu.brown.cs.student.serverTests.Mocks;
+
+public class MockGameState {
+
 }
