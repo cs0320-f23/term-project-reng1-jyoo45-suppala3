@@ -45,8 +45,10 @@ test("When I click a cell, it reveals it", async ({ page }) => {
   await page.getByPlaceholder("Type your username here:").click();
   await page.getByPlaceholder("Type your username here:").fill("user");
   await page.getByLabel("Create Game Button").click();
-  await page.locator(".cell").first().click();
-  // check that the number of hidden cells is not 100? to ensure that a cell is revealed
+  const firstCell = page.locator(".cell").first();
+  await expect(firstCell).toHaveClass(/hidden/);
+  await firstCell.click();
+  await expect(firstCell).not.toHaveClass(/hidden/);
 });
 
 test("When I input a command to reveal a cell, it reveals it", async ({
@@ -58,9 +60,9 @@ test("When I input a command to reveal a cell, it reveals it", async ({
   await page.getByPlaceholder("start typing command...").click();
   await page.getByPlaceholder("start typing command...").fill("reveal 0 0");
   await page.getByPlaceholder("start typing command...").press("Enter");
-  // check that the number of hidden cells is not 100? to ensure that a cell is revealed
+  const firstCell = page.locator(".cell").first();
+  await expect(firstCell).not.toHaveClass(/hidden/);
 });
-
 
 test("Restart game button resets the game", async ({ page }) => {
   await page.getByPlaceholder("Type your username here:").click();
@@ -78,13 +80,10 @@ test("Customize board should change board size", async ({ page }) => {
   await page.getByPlaceholder("Rows").fill("20");
   await page.getByPlaceholder("Columns").fill("20");
   await page.getByLabel("Submit").click();
-  // Verify the board has been customized? somehow access the row value of the minesweeper-board? or that the hidden cells are 400?
 
-  for(let i = 0; i < 20; i++){
-    for(let n = 0; n < 20; n++){
+  for (let i = 0; i < 20; i++) {
+    for (let n = 0; n < 20; n++) {
       const cellSelector = `[aria-label="cell-${i}-${n}"]`;
-
-      // Example usage in a Playwright test
       await expect(page.getByLabel(cellSelector)).toBeVisible;
     }
   }
@@ -111,7 +110,6 @@ test("a right click displays a flag", async ({ page }) => {
   await page.locator(".cell").first().click({
     button: "right",
   });
-  //displays a flag? show that the number of hiddens do not change possibly?
 });
 
 test("Game over should be displayed on hitting a mine", async ({ page }) => {
@@ -135,4 +133,13 @@ test("Game over should be displayed on hitting a mine", async ({ page }) => {
   await page.locator("div:nth-child(3) > div").first().click();
   await page.locator("div:nth-child(3) > div:nth-child(2)").click();
   await expect(page.getByText("GAME OVER")).toBeVisible();
+});
+
+test("should display error for invalid game code", async ({ page }) => {
+  await page.getByPlaceholder("Type your username here:").fill("testUser");
+  await page.getByPlaceholder("Enter gamecode here:").fill("invalidCode");
+  await page.getByLabel("Join Game Button").click();
+  await expect(page.getByTestId("error-text")).toHaveText(
+    " Error: Failed to join the game!"
+  );
 });
