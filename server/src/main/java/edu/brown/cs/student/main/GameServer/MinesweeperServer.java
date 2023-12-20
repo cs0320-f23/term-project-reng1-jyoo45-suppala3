@@ -271,7 +271,7 @@ public class MinesweeperServer extends WebSocketServer {
           User newUser =
               new NewClientHandler().handleNewClientNoCode(deserializedMessage, webSocket, this);
           String gameCode = new GameCodeGenerator().generateGameCode(this.getExistingGameCodes());
-          this.gameCodeToGameState.put(gameCode, new GameState(this, gameCode));
+          this.gameCodeToGameState.put(gameCode, new GameState(this, gameCode, false));
           this.gameCodeToGameState.get(gameCode).addUser(newUser);
           this.gameStateToSockets.put(this.gameCodeToGameState.get(gameCode), new HashSet<>());
           this.userToGameCode.put(newUser, gameCode);
