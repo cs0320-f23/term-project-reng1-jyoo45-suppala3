@@ -7,7 +7,6 @@ import edu.brown.cs.student.main.User.User;
 import edu.brown.cs.student.main.exceptions.ClientAlreadyExistsException;
 import edu.brown.cs.student.main.exceptions.IncorrectGameCodeException;
 import edu.brown.cs.student.main.exceptions.MissingFieldException;
-import org.java_websocket.WebSocket;
 
 public class MockNewClientHandler {
   public User handleNewClientNoCode(Message message, MinesweeperServer server)

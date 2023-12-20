@@ -2,8 +2,6 @@ package edu.brown.cs.student.serverTests.Mocks;
 
 import edu.brown.cs.student.main.GameServer.MinesweeperServer;
 import edu.brown.cs.student.main.GameState.Cell;
-import edu.brown.cs.student.main.Message.Message;
-import edu.brown.cs.student.main.Message.MessageType;
 import edu.brown.cs.student.main.User.User;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,18 +13,13 @@ import java.util.Map;
  */
 public class MockGameState {
 
-  private final MinesweeperServer minesweeperServer;
-  private final String gameCode; // the game code corresponding to this GameState
   private Cell[][] board;
   private final ArrayList<User> players;
   private int numMoves;
-  private boolean gameOver;
   private int numRows;
   private int numCols;
   private int numMines;
   private int numHidden;
-  private boolean mock;
-
   /**
    * Constructs a new GameState associated with a MinesweeperServer and a specific game code.
    *
@@ -34,17 +27,13 @@ public class MockGameState {
    * @param gameCode The unique game code associated with this game state.
    */
   public MockGameState(MinesweeperServer minesweeperServer, String gameCode, boolean mock) {
-    this.minesweeperServer = minesweeperServer;
-    this.gameCode = gameCode;
     this.numRows = 10;
     this.numCols = 10;
     this.numMines = 5;
     this.board = new Cell[10][10];
     this.players = new ArrayList<>();
     this.numMoves = 0;
-    this.gameOver = false;
     this.numHidden = this.numRows * this.numCols;
-    this.mock = mock;
   }
 
   /**
@@ -122,7 +111,6 @@ public class MockGameState {
   private void revealCells(int row, int col) {
     if (row < 0 || row >= this.board.length || col < 0 || col >= this.board[0].length) return;
     else if (this.board[row][col].getVal() == -1) {
-      this.gameOver = true;
       this.revealBoard();
     } else if (this.board[row][col].isHidden() && this.board[row][col].getVal() >= 0) {
       if(!board[row][col].isFlagged()){
@@ -138,7 +126,6 @@ public class MockGameState {
       }
     }
     if (this.numHidden == this.numMines){
-      this.gameOver = true;
       this.revealBoard();
     }
   }
@@ -189,7 +176,6 @@ public class MockGameState {
   public void createNewGame() {
     Map<String, Object> boardData = new HashMap<>();
     this.createNewBoard(0, 0);
-    this.gameOver = false;
     this.numMoves = 0;
   }
 

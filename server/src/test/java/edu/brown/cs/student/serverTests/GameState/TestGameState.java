@@ -1,15 +1,10 @@
 package edu.brown.cs.student.serverTests.GameState;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import edu.brown.cs.student.main.GameServer.MinesweeperServer;
 import edu.brown.cs.student.main.GameState.Cell;
 import edu.brown.cs.student.main.GameState.GameState;
-import java.util.HashSet;
-import java.util.Set;
-
 import java.util.concurrent.ThreadLocalRandom;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
