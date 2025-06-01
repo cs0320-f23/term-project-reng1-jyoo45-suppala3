@@ -4,9 +4,11 @@
 
 Our final project is a full-stack developed Collaborative Minesweeper Game, a multiplayer adaptation of the classic logic game Minesweeper.
 
-The team members to this project were jyoo45, reng1, suppala3.
+The team members on this project were jyoo45, reng1, suppala3.
 
-We spent around 12 hours a week on working on this project during the term project period.
+We spent around 12 hours a week working on this project during the term project period.
+
+Demo link: https://www.youtube.com/watch?v=L-LU8lwwsL8 
 
 # Features
 
